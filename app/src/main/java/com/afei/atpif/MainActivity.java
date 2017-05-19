@@ -1,8 +1,13 @@
 package com.afei.atpif;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,9 +17,37 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener
+{
+
+    private ViewPager mViewPager;
+    private FragmentPagerAdapter mAdapter;
+    private List<Fragment> mFragments = new ArrayList<Fragment>();
+
+    /**
+     * 底部四个按钮
+     */
+    private LinearLayout mTabBtnWeixin;
+    private LinearLayout mTabBtnFrd;
+    private LinearLayout mTabBtnAddress;
+    private LinearLayout mTabBtnSettings;
+
+
+    private TrainListFragment TrainList;
+    private BaliseListFragment BaliseList;
+    private LineFragment Line;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +73,85 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        mViewPager = (ViewPager) findViewById(R.id.id_viewpager);
+
+        initView();
+
+        mAdapter = new FragmentPagerAdapter(getSupportFragmentManager())
+        {
+
+            @Override
+            public int getCount()
+            {
+                return mFragments.size();
+            }
+
+            @Override
+            public Fragment getItem(int arg0)
+            {
+                return mFragments.get(arg0);
+            }
+        };
+
+        try {
+            mViewPager.setAdapter(mAdapter);
+        }
+        catch (Exception ex)
+        {
+            Log.d("zgx","mUserId====="+ex.toString());
+        }
+
+
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {
+
+            private int currentIndex;
+
+            @Override
+            public void onPageSelected(int position)
+            {
+                resetTabBtn();
+                switch (position)
+                {
+                    case 0:
+                        ((ImageButton) mTabBtnWeixin.findViewById(R.id.btn_tab_bottom_weixin))
+                                .setImageResource(R.drawable.tab_weixin_pressed);
+                        break;
+                    case 1:
+                        ((ImageButton) mTabBtnFrd.findViewById(R.id.btn_tab_bottom_friend))
+                                .setImageResource(R.drawable.tab_find_frd_pressed);
+                        break;
+                    case 2:
+                        ((ImageButton) mTabBtnAddress.findViewById(R.id.btn_tab_bottom_contact))
+                                .setImageResource(R.drawable.tab_address_pressed);
+                        break;
+                    case 3:
+                        ((ImageButton) mTabBtnSettings.findViewById(R.id.btn_tab_bottom_setting))
+                                .setImageResource(R.drawable.tab_settings_pressed);
+                        break;
+                }
+
+                currentIndex = position;
+            }
+
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2)
+            {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int arg0)
+            {
+            }
+        });
+
+
+
+
+
     }
 
     @Override
@@ -98,4 +210,39 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+
+    protected void resetTabBtn()
+    {
+        ((ImageButton) mTabBtnWeixin.findViewById(R.id.btn_tab_bottom_weixin))
+                .setImageResource(R.drawable.tab_weixin_normal);
+        ((ImageButton) mTabBtnFrd.findViewById(R.id.btn_tab_bottom_friend))
+                .setImageResource(R.drawable.tab_find_frd_normal);
+        ((ImageButton) mTabBtnAddress.findViewById(R.id.btn_tab_bottom_contact))
+                .setImageResource(R.drawable.tab_address_normal);
+        ((ImageButton) mTabBtnSettings.findViewById(R.id.btn_tab_bottom_setting))
+                .setImageResource(R.drawable.tab_settings_normal);
+    }
+
+
+    private void initView()
+    {
+
+        mTabBtnWeixin = (LinearLayout) findViewById(R.id.id_tab_bottom_weixin);
+        mTabBtnFrd = (LinearLayout) findViewById(R.id.id_tab_bottom_friend);
+        mTabBtnAddress = (LinearLayout) findViewById(R.id.id_tab_bottom_contact);
+        mTabBtnSettings = (LinearLayout) findViewById(R.id.id_tab_bottom_setting);
+
+        TrainList = new TrainListFragment();
+        BaliseList = new BaliseListFragment();
+        Line = new LineFragment();
+
+        mFragments.add(TrainList);
+        mFragments.add(BaliseList);
+        mFragments.add(Line);
+
+    }
+
+
 }
