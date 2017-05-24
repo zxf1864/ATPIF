@@ -1,5 +1,6 @@
 package com.afei.atpif;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,11 +21,14 @@ import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import com.afei.atpif.SocketClient.NettyService;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity
     private TrainListFragment TrainList;
     private BaliseListFragment BaliseList;
     private LineFragment Line;
+    private SettingFragment Setting;
 
 
 
@@ -150,7 +155,8 @@ public class MainActivity extends AppCompatActivity
 
 
 
-
+        Timber.plant(new Timber.DebugTree());
+        startService(new Intent(this, NettyService.class));
 
     }
 
@@ -237,10 +243,12 @@ public class MainActivity extends AppCompatActivity
         TrainList = new TrainListFragment();
         BaliseList = new BaliseListFragment();
         Line = new LineFragment();
+        Setting = new SettingFragment();
 
         mFragments.add(TrainList);
         mFragments.add(BaliseList);
         mFragments.add(Line);
+        mFragments.add(Setting);
 
     }
 
