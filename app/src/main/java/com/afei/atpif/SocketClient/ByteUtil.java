@@ -86,6 +86,10 @@ public class ByteUtil {
         return (short) (((b[index + 1] << 8) | b[index + 0] & 0xff));
     }
 
+    public static short getShortinvert(byte[] b, int index) {
+        return (short) (((b[index + 0] << 8) | b[index + 1] & 0xff));
+    }
+
     /**
      * 转换int为byte数组
      *

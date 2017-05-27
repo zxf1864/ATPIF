@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.widget.SeekBar;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -53,14 +54,10 @@ public class LineFragment extends BaseFragment {
         view = inflater.inflate(R.layout.fragment_line, container, false);
 
         mChart = (LineChart) view.findViewById(R.id.line_speed);
-     /*
-        mChart.setOnChartGestureListener(this);
-        mChart.setOnChartValueSelectedListener(this);
-        */
-        mChart.setDrawGridBackground(false);
 
-        // no description text
-        mChart.getDescription().setEnabled(false);
+
+        // enable description text
+        mChart.getDescription().setEnabled(true);
 
         // enable touch gestures
         mChart.setTouchEnabled(true);
@@ -68,71 +65,45 @@ public class LineFragment extends BaseFragment {
         // enable scaling and dragging
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
-        // mChart.setScaleXEnabled(true);
-        // mChart.setScaleYEnabled(true);
+        mChart.setDrawGridBackground(false);
 
         // if disabled, scaling can be done on x- and y-axis separately
         mChart.setPinchZoom(true);
 
         // set an alternative background color
-        // mChart.setBackgroundColor(Color.GRAY);
+        mChart.setBackgroundColor(Color.LTGRAY);
 
-        // create a custom MarkerView (extend MarkerView) and specify the layout
-        // to use for it
-        /*
-        MyMarkerView mv = new MyMarkerView(this, R.layout.custom_marker_view);
-        mv.setChartView(mChart); // For bounds control
-        mChart.setMarker(mv); // Set the marker to the chart
-        */
-        // x-axis limit line
-        LimitLine llXAxis = new LimitLine(10f, "Index 10");
-        llXAxis.setLineWidth(4f);
-        llXAxis.enableDashedLine(10f, 10f, 0f);
-        llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-        llXAxis.setTextSize(10f);
+        LineData data = new LineData();
+        data.setValueTextColor(Color.WHITE);
 
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.enableGridDashedLine(10f, 10f, 0f);
-        //xAxis.setValueFormatter(new MyCustomXAxisValueFormatter());
-        //xAxis.addLimitLine(llXAxis); // add x-axis limit line
+        // add empty data
+        mChart.setData(data);
 
+        // get the legend (only possible after setting data)
+        Legend l = mChart.getLegend();
 
+        // modify the legend ...
+        l.setForm(Legend.LegendForm.LINE);
 
-        LimitLine ll1 = new LimitLine(150f, "Upper Limit");
-        ll1.setLineWidth(4f);
-        ll1.enableDashedLine(10f, 10f, 0f);
-        ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-        ll1.setTextSize(10f);
+        l.setTextColor(Color.WHITE);
 
-        LimitLine ll2 = new LimitLine(-30f, "Lower Limit");
-        ll2.setLineWidth(4f);
-        ll2.enableDashedLine(10f, 10f, 0f);
-        ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-        ll2.setTextSize(10f);
+        XAxis xl = mChart.getXAxis();
 
+        xl.setTextColor(Color.WHITE);
+        xl.setDrawGridLines(false);
+        xl.setAvoidFirstLastClipping(true);
+        xl.setEnabled(true);
 
         YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
-        leftAxis.addLimitLine(ll1);
-        leftAxis.addLimitLine(ll2);
-        leftAxis.setAxisMaximum(200f);
-        leftAxis.setAxisMinimum(-50f);
-        //leftAxis.setYOffset(20f);
-        leftAxis.enableGridDashedLine(10f, 10f, 0f);
-        leftAxis.setDrawZeroLine(false);
 
-        // limit lines are drawn behind data (and not on top)
-        leftAxis.setDrawLimitLinesBehindData(true);
+        leftAxis.setTextColor(Color.WHITE);
+        leftAxis.setAxisMaximum(100f);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setDrawGridLines(true);
 
-        mChart.getAxisRight().setEnabled(false);
-
-        setAxis();
-
-        //mChart.getViewPortHandler().setMaximumScaleY(2f);
-        //mChart.getViewPortHandler().setMaximumScaleX(2f);
-
-        // add data
-        setData(100, 10);
+        YAxis rightAxis = mChart.getAxisRight();
+        rightAxis.setEnabled(false);
+        RefreshUI();
 
         return view;
     }
@@ -174,6 +145,8 @@ public class LineFragment extends BaseFragment {
         return (float) (Math.random() * range) + startsfrom;
     }
 
+    //ArrayList<Entry> speed = new ArrayList<Entry>();
+    //ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
 
     private void setData(int count, float range) {
 
@@ -235,6 +208,94 @@ public class LineFragment extends BaseFragment {
 
         // set data
         mChart.setData(data);
+    }
+
+    private LineDataSet createSet() {
+
+        LineDataSet set = new LineDataSet(null, "Dynamic Data");
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set.setColor(ColorTemplate.getHoloBlue());
+        set.setCircleColor(Color.WHITE);
+        set.setLineWidth(2f);
+        set.setCircleRadius(4f);
+        set.setFillAlpha(65);
+        set.setFillColor(ColorTemplate.getHoloBlue());
+        set.setHighLightColor(Color.rgb(244, 117, 117));
+        set.setValueTextColor(Color.WHITE);
+        set.setValueTextSize(9f);
+        set.setDrawValues(false);
+        return set;
+    }
+
+
+    private synchronized void UpdateLine()
+    {
+        LineData data = mChart.getData();
+
+        if (data != null) {
+
+            ILineDataSet set = data.getDataSetByIndex(0);
+            // set.addEntry(...); // can be called as well
+
+            if (set == null) {
+                set = createSet();
+                data.addDataSet(set);
+            }
+            data.addEntry(new Entry(set.getEntryCount(), (float) (Math.random() * 40) + 30f), 0);
+            data.notifyDataChanged();
+
+            // let the chart know it's data has changed
+            mChart.notifyDataSetChanged();
+
+            // limit the number of visible entries
+            //mChart.setVisibleXRangeMinimum(0);
+            //mChart.setVisibleXRangeMaximum(120);
+            // mChart.setVisibleYRange(30, AxisDependency.LEFT);
+
+            // move to the latest entry
+            mChart.moveViewToX(data.getEntryCount());
+
+            // this automatically refreshes the chart (calls invalidate())
+            // mChart.moveViewTo(data.getXValCount()-7, 55f,
+            // AxisDependency.LEFT);
+        }
+
+    }
+
+    private Thread thread;
+    private void RefreshUI() {
+
+        if (thread != null)
+            thread.interrupt();
+
+        final Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                UpdateLine();
+            }
+        };
+
+        thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                while (thread != null) {
+
+                    // Don't generate garbage runnables inside the loop.
+                    getActivity().runOnUiThread(runnable);
+
+                    try {
+                        Thread.sleep(25);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        thread.start();
     }
 
 

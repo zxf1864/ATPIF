@@ -17,6 +17,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
 
+import com.afei.atpif.Model.LineData;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -132,6 +134,18 @@ public class NettyService extends Service implements NettyListener {
 
         String log = String.format("header=%d, func=%d, len = %d", header, func, len);
         Timber.i(log);
+
+        final ATPIFSocketProtocol protocol = byteBuf;
+
+        LineData.getInstance().AddData(protocol);
+        /*
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }).start();
+        */
     }
 
     private void handle(int t, int i, int f) {
