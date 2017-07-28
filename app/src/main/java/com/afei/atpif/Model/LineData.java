@@ -19,10 +19,12 @@ import java.util.concurrent.TimeUnit;
 
 public class LineData {
 
-    ArrayList<Entry> speed = new ArrayList<Entry>();
+    private SpeedData sd;
+    private IOData io;
+
     ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
 
-    int num = 0;
+
 
     private static volatile LineData instance=null;
 
@@ -44,38 +46,36 @@ public class LineData {
 
     private LineData()
     {
-        // create a dataset and give it a type
-        LineDataSet set1 = new LineDataSet(speed, "速度");
-        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set1.setColor(ColorTemplate.getHoloBlue());
-        set1.setValueTextColor(ColorTemplate.getHoloBlue());
-        set1.setLineWidth(1.5f);
-        set1.setDrawCircles(false);
-        set1.setDrawValues(false);
-        set1.setFillAlpha(65);
-        set1.setFillColor(ColorTemplate.getHoloBlue());
-        set1.setHighLightColor(Color.rgb(244, 117, 117));
-        set1.setDrawCircleHole(false);
+        io = IOData.getInstance();
+        sd = new SpeedData();
+    }
 
+    public IOData GetIOData()
+    {
+        return io;
+    }
 
-        dataSets.add(set1);
-
-
+    public SpeedData GetSpeedData()
+    {
+        return sd;
     }
 
     public void AddData(ATPIFSocketProtocol protocol)
     {
-        if(protocol.getContentFunc() == 4)
+        switch(protocol.getContentFunc())
         {
-            byte[] temp = protocol.getContent();
-            int speeddata = ByteUtil.getShortinvert(temp,4);
-            float speeddata_f = (float)0.036*speeddata;
-            long now = TimeUnit.MILLISECONDS.toMillis(System.currentTimeMillis());
-
-            speed.add(new Entry(num, 1)); // add one entry per hour
-            num++;
+            case 1:
+                io.AddBIUData(protocol);
+                break;
+            case 2:
+                io.AddTIUData(protocol);
+                break;
+            case 4:
+                sd.AddData(protocol);
+                break;
 
         }
+
     }
 
 }

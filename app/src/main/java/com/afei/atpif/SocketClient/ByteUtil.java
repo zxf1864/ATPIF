@@ -124,6 +124,18 @@ public class ByteUtil {
         return value;
     }
 
+    public static int getIntinvert(byte[] src, int offset) {
+//        return (int) ((((bb[index + 3] & 0xff) << 24)
+//                | ((bb[index + 2] & 0xff) << 16)
+//                | ((bb[index + 1] & 0xff) << 8) | ((bb[index + 0] & 0xff) << 0)));
+        int value;
+        value = (int) ((src[offset + 3] & 0xFF)
+                | ((src[offset+2] & 0xFF)<<8)
+                | ((src[offset+1] & 0xFF)<<16)
+                | ((src[offset+0] & 0xFF)<<24));
+        return value;
+    }
+
     /**
      * 转换long型为byte数组
      *

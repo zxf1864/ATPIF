@@ -15,6 +15,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -24,7 +25,8 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.afei.atpif.SocketClient.NettyService" />
+        <service android:name=".SocketClient.NettyService" />
+
     </application>
 
 </manifest>

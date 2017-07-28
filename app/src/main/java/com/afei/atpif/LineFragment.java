@@ -2,6 +2,7 @@ package com.afei.atpif;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,19 +18,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.SeekBar;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LimitLine;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.Utils;
+import com.afei.atpif.CustomWidget.ColorTemplate;
+import com.afei.atpif.CustomWidget.Entry;
+import com.afei.atpif.CustomWidget.ILineDataSet;
+import com.afei.atpif.CustomWidget.IOYFormatter;
+import com.afei.atpif.CustomWidget.Legend;
+import com.afei.atpif.CustomWidget.LineData;
+import com.afei.atpif.CustomWidget.LineDataSet;
+import com.afei.atpif.CustomWidget.XAxis;
+import com.afei.atpif.CustomWidget.YAxis;
+import com.afei.atpif.FChart.FChart;
+import com.afei.atpif.Model.IOData;
+import com.afei.atpif.Model.SpeedData;
+import com.afei.atpif.CustomWidget.LineChart;
+
+
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.TimeUnit;
 
 
@@ -39,7 +48,9 @@ import java.util.concurrent.TimeUnit;
 public class LineFragment extends BaseFragment {
 
     private View view;
-    private LineChart mChart;
+    private FChart mSpeedChart;
+    private LineChart mIOChart;
+
 
 
     public LineFragment() {
@@ -53,93 +64,150 @@ public class LineFragment extends BaseFragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_line, container, false);
 
-        mChart = (LineChart) view.findViewById(R.id.line_speed);
+        ConfigSpeedChart();
+
+        //ConfigIOChart();
 
 
+        //RefreshUI();
+
+
+        return view;
+    }
+
+    private void ConfigSpeedChart()
+    {
+        mSpeedChart = (FChart) view.findViewById(R.id.line_speed);
+
+        mSpeedChart.invalidate();
+
+
+        /*
         // enable description text
-        mChart.getDescription().setEnabled(true);
+        mSpeedChart.getDescription().setEnabled(true);
 
         // enable touch gestures
-        mChart.setTouchEnabled(true);
+        mSpeedChart.setTouchEnabled(true);
 
         // enable scaling and dragging
-        mChart.setDragEnabled(true);
-        mChart.setScaleEnabled(true);
-        mChart.setDrawGridBackground(false);
+        mSpeedChart.setDragEnabled(true);
+        mSpeedChart.setScaleEnabled(true);
+        mSpeedChart.setDrawGridBackground(false);
 
         // if disabled, scaling can be done on x- and y-axis separately
-        mChart.setPinchZoom(true);
+        mSpeedChart.setPinchZoom(true);
 
         // set an alternative background color
-        mChart.setBackgroundColor(Color.LTGRAY);
+        mSpeedChart.setBackgroundColor(Color.LTGRAY);
 
         LineData data = new LineData();
         data.setValueTextColor(Color.WHITE);
 
         // add empty data
-        mChart.setData(data);
+        mSpeedChart.setData(data);
 
         // get the legend (only possible after setting data)
-        Legend l = mChart.getLegend();
+        Legend l = mSpeedChart.getLegend();
 
         // modify the legend ...
         l.setForm(Legend.LegendForm.LINE);
 
         l.setTextColor(Color.WHITE);
 
-        XAxis xl = mChart.getXAxis();
+        XAxis xl = mSpeedChart.getXAxis();
+
+        xl.setPosition(XAxis.XAxisPosition.BOTTOM); // 设置X轴的位置
 
         xl.setTextColor(Color.WHITE);
+        xl.setDrawGridLines(true);
+        xl.setAvoidFirstLastClipping(true);
+        xl.setAxisLineColor(Color.BLUE);
+        xl.setAxisMaximum(100f);
+        xl.setAxisMinimum(0f);
+
+        xl.setEnabled(true);
+
+
+        YAxis leftAxis = mSpeedChart.getAxisLeft();
+        leftAxis.setAxisLineColor(Color.BLUE);
+        leftAxis.setTextColor(Color.WHITE);
+        leftAxis.setAxisMaximum(350f);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setDrawGridLines(true);
+
+
+        YAxis rightAxis = mSpeedChart.getAxisRight();
+        rightAxis.setAxisLineColor(Color.RED);
+        rightAxis.setAxisMaximum(2000f);
+        rightAxis.setAxisMinimum(0f);
+
+        rightAxis.setEnabled(true);
+
+
+        */
+    }
+
+
+    private void ConfigIOChart()
+    {
+        //mIOChart = (LineChart) view.findViewById(R.id.id_line_IO);
+
+        // enable description text
+        mIOChart.getDescription().setEnabled(true);
+
+        // enable touch gestures
+        mIOChart.setTouchEnabled(true);
+
+        // enable scaling and dragging
+        mIOChart.setDragEnabled(true);
+        mIOChart.setScaleEnabled(true);
+        mIOChart.setDrawGridBackground(false);
+
+        // if disabled, scaling can be done on x- and y-axis separately
+        mIOChart.setPinchZoom(true);
+
+        // set an alternative background color
+        mIOChart.setBackgroundColor(Color.LTGRAY);
+
+        LineData data = new LineData();
+        data.setValueTextColor(Color.WHITE);
+
+        // add empty data
+        mIOChart.setData(data);
+
+        // get the legend (only possible after setting data)
+        Legend l = mIOChart.getLegend();
+
+        // modify the legend ...
+        l.setForm(Legend.LegendForm.LINE);
+
+        l.setTextColor(Color.WHITE);
+
+        XAxis xl = mIOChart.getXAxis();
+
+        xl.setTextColor(Color.WHITE);
+        xl.setAxisLineColor(Color.RED);
         xl.setDrawGridLines(false);
         xl.setAvoidFirstLastClipping(true);
         xl.setEnabled(true);
 
-        YAxis leftAxis = mChart.getAxisLeft();
+        YAxis leftAxis = mIOChart.getAxisLeft();
 
-        leftAxis.setTextColor(Color.WHITE);
-        leftAxis.setAxisMaximum(100f);
-        leftAxis.setAxisMinimum(0f);
+        leftAxis.setTextColor(Color.RED);
+
         leftAxis.setDrawGridLines(true);
 
-        YAxis rightAxis = mChart.getAxisRight();
-        rightAxis.setEnabled(false);
-        RefreshUI();
+        List<String> labels =  new ArrayList<>();
+        labels.add("PWN");
+        labels.add("CAB");
+        labels.add(" EB");
 
-        return view;
-    }
-
-
-    private void setAxis()
-    {
-        //上面右边效果图的部分代码，设置X轴
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // 设置X轴的位置
-//        xAxis.setTypeface(mTf); // 设置字体
-        xAxis.setEnabled(false);
-        // 上面第一行代码设置了false,所以下面第一行即使设置为true也不会绘制AxisLine
-        xAxis.setDrawAxisLine(true);
-
-        // 前面xAxis.setEnabled(false);则下面绘制的Grid不会有"竖的线"（与X轴有关）
-        xAxis.setDrawGridLines(true); // 效果如下图
-
-        // 上面左边效果图的代码
-        // 两个都设置为 true
-        xAxis.setEnabled(true);
-        xAxis.setDrawGridLines(true);
-
-        // 上面右边效果图的代码
-        xAxis.setEnabled(false);
-        // xAxis.setEnabled(false);则下面绘制的Grid不会有 "竖的线(与X轴有关)"
-        xAxis.setDrawGridLines(true);
-
-        xAxis.setTextColor(Color.BLUE);
-        xAxis.setTextSize(24f);
-        xAxis.setGridLineWidth(10f);
-        xAxis.setGridColor(Color.RED);
-        xAxis.setAxisLineColor(Color.GREEN);
-        xAxis.setAxisLineWidth(5f);
+        IOYFormatter myXFormatter = new IOYFormatter(labels);
+        leftAxis.setValueFormatter(myXFormatter);
 
     }
+
+
 
     protected float getRandom(float range, float startsfrom) {
         return (float) (Math.random() * range) + startsfrom;
@@ -207,19 +275,104 @@ public class LineFragment extends BaseFragment {
 
 
         // set data
-        mChart.setData(data);
+        //mSpeedChart.setData(data);
     }
 
-    private LineDataSet createSet() {
+    private LineDataSet createSpeedSet() {
 
-        LineDataSet set = new LineDataSet(null, "Dynamic Data");
+        LineDataSet set = new LineDataSet(null, "速度");
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set.setColor(ColorTemplate.getHoloBlue());
+        set.setColor(Color.RED);
         set.setCircleColor(Color.WHITE);
         set.setLineWidth(2f);
-        set.setCircleRadius(4f);
+        set.setCircleRadius(1f);
         set.setFillAlpha(65);
-        set.setFillColor(ColorTemplate.getHoloBlue());
+        set.setFillColor(Color.BLUE);
+        //set.setHighLightColor(Color.rgb(244, 117, 117));
+        set.setValueTextColor(Color.WHITE);
+        set.setValueTextSize(9f);
+        set.setDrawValues(false);
+        return set;
+    }
+
+    private LineDataSet createAccSet() {
+
+        LineDataSet set = new LineDataSet(null, "加速度");
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set.setColor(Color.BLUE);
+        set.setCircleColor(Color.WHITE);
+        set.setLineWidth(2f);
+        set.setCircleRadius(1f);
+        set.setFillAlpha(65);
+        set.setFillColor(Color.RED);
+        set.setHighLightColor(Color.rgb(244, 117, 117));
+        set.setValueTextColor(Color.WHITE);
+        set.setValueTextSize(9f);
+        set.setDrawValues(false);
+        return set;
+    }
+
+    private LineDataSet createPostionSet() {
+
+        LineDataSet set = new LineDataSet(null, "位置");
+        set.setAxisDependency(YAxis.AxisDependency.RIGHT);
+        set.setColor(Color.GREEN);
+        set.setCircleColor(Color.WHITE);
+        set.setLineWidth(2f);
+        set.setCircleRadius(1f);
+        set.setFillAlpha(65);
+        set.setFillColor(Color.GREEN);
+        set.setHighLightColor(Color.rgb(244, 117, 117));
+        set.setValueTextColor(Color.WHITE);
+        set.setValueTextSize(9f);
+        set.setDrawValues(false);
+        return set;
+    }
+
+    private LineDataSet createPWRSet() {
+
+        LineDataSet set = new LineDataSet(null, "电源");
+        set.setAxisDependency(YAxis.AxisDependency.RIGHT);
+        set.setColor(Color.GREEN);
+        set.setCircleColor(Color.WHITE);
+        set.setLineWidth(2f);
+        set.setCircleRadius(1f);
+        set.setFillAlpha(65);
+        set.setFillColor(Color.GREEN);
+        set.setHighLightColor(Color.rgb(244, 117, 117));
+        set.setValueTextColor(Color.WHITE);
+        set.setValueTextSize(9f);
+        set.setDrawValues(false);
+        return set;
+    }
+
+    private LineDataSet createCABSet() {
+
+        LineDataSet set = new LineDataSet(null, "激活");
+        set.setAxisDependency(YAxis.AxisDependency.RIGHT);
+        set.setColor(Color.GREEN);
+        set.setCircleColor(Color.WHITE);
+        set.setLineWidth(2f);
+        set.setCircleRadius(1f);
+        set.setFillAlpha(65);
+        set.setFillColor(Color.GREEN);
+        set.setHighLightColor(Color.rgb(244, 117, 117));
+        set.setValueTextColor(Color.WHITE);
+        set.setValueTextSize(9f);
+        set.setDrawValues(false);
+        return set;
+    }
+
+    private LineDataSet createFWRSet() {
+
+        LineDataSet set = new LineDataSet(null, "前向");
+        set.setAxisDependency(YAxis.AxisDependency.RIGHT);
+        set.setColor(Color.GREEN);
+        set.setCircleColor(Color.WHITE);
+        set.setLineWidth(2f);
+        set.setCircleRadius(1f);
+        set.setFillAlpha(65);
+        set.setFillColor(Color.GREEN);
         set.setHighLightColor(Color.rgb(244, 117, 117));
         set.setValueTextColor(Color.WHITE);
         set.setValueTextSize(9f);
@@ -228,24 +381,45 @@ public class LineFragment extends BaseFragment {
     }
 
 
-    private synchronized void UpdateLine()
+    private synchronized void UpdateIOLine()
     {
-        LineData data = mChart.getData();
+        LineData data = mIOChart.getData();
 
-        if (data != null) {
+        com.afei.atpif.Model.LineData ld = com.afei.atpif.Model.LineData.getInstance();
+        IOData IO = ld.GetIOData();
+
+        ArrayList<Entry> TIUtemp = IO.GetTIUData();
+        ArrayList<Entry> BIUtemp = IO.GetBIUData();
+
+
+        if ((data != null)&&((TIUtemp.size()>0)||(BIUtemp.size()>0))) {
 
             ILineDataSet set = data.getDataSetByIndex(0);
             // set.addEntry(...); // can be called as well
 
             if (set == null) {
-                set = createSet();
+                set = createPWRSet();
                 data.addDataSet(set);
+                /*
+                ILineDataSet cabset = createCABSet();
+                data.addDataSet(cabset);
+                ILineDataSet fwrset = createFWRSet();
+                data.addDataSet(fwrset);
+                */
             }
-            data.addEntry(new Entry(set.getEntryCount(), (float) (Math.random() * 40) + 30f), 0);
+
+
+            for (int i=data.getEntryCount();i<BIUtemp.size();i++)
+            {
+                IO.setBiudata((int)BIUtemp.get(i).getY());
+                data.addEntry(new Entry(BIUtemp.get(i).getX(),IO.getBIU().GetDI05_EB()), 0);
+
+            }
+
             data.notifyDataChanged();
 
             // let the chart know it's data has changed
-            mChart.notifyDataSetChanged();
+            mIOChart.notifyDataSetChanged();
 
             // limit the number of visible entries
             //mChart.setVisibleXRangeMinimum(0);
@@ -253,7 +427,61 @@ public class LineFragment extends BaseFragment {
             // mChart.setVisibleYRange(30, AxisDependency.LEFT);
 
             // move to the latest entry
-            mChart.moveViewToX(data.getEntryCount());
+            mIOChart.moveViewToX(data.getEntryCount());
+
+            // this automatically refreshes the chart (calls invalidate())
+            // mChart.moveViewTo(data.getXValCount()-7, 55f,
+            // AxisDependency.LEFT);
+        }
+
+    }
+
+    /*
+    private synchronized void UpdateSpeedLine()
+    {
+        LineData data = mSpeedChart.getData();
+
+        com.afei.atpif.Model.LineData ld = com.afei.atpif.Model.LineData.getInstance();
+        SpeedData sd = ld.GetSpeedData();
+
+        ArrayList<Entry> acctemp = sd.GetaccData();
+        ArrayList<Entry> speedtemp = sd.GetSpeedData();
+        ArrayList<Entry> postiontemp = sd.GetpotionData();
+
+        if ((data != null)&&(speedtemp.size()>0)) {
+
+            ILineDataSet set = data.getDataSetByIndex(0);
+            // set.addEntry(...); // can be called as well
+
+            if (set == null) {
+                set = createSpeedSet();
+                data.addDataSet(set);
+                ILineDataSet accset = createAccSet();
+                data.addDataSet(accset);
+                ILineDataSet postionset = createPostionSet();
+                data.addDataSet(postionset);
+            }
+
+
+            for (int i=data.getEntryCount()/3;i<speedtemp.size();i++)
+            {
+                data.addEntry(speedtemp.get(i), 0);
+                data.addEntry(acctemp.get(i), 1);
+                data.addEntry(postiontemp.get(i), 2);
+            }
+
+            data.notifyDataChanged();
+
+            // let the chart know it's data has changed
+            mSpeedChart.notifyDataSetChanged();
+
+            // limit the number of visible entries
+            //mChart.setVisibleXRangeMinimum(0);
+            //mChart.setVisibleXRangeMaximum(120);
+            // mChart.setVisibleYRange(30, AxisDependency.LEFT);
+
+            // move to the latest entry
+            mSpeedChart.moveViewToX(data.getEntryCount());
 
             // this automatically refreshes the chart (calls invalidate())
             // mChart.moveViewTo(data.getXValCount()-7, 55f,
@@ -272,7 +500,8 @@ public class LineFragment extends BaseFragment {
 
             @Override
             public void run() {
-                UpdateLine();
+                UpdateSpeedLine();
+                UpdateIOLine();
             }
         };
 
@@ -297,6 +526,6 @@ public class LineFragment extends BaseFragment {
 
         thread.start();
     }
-
+   */
 
 }

@@ -1,7 +1,6 @@
 package com.afei.atpif;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,8 +21,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.afei.atpif.SocketClient.NettyService;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +35,10 @@ public class MainActivity extends AppCompatActivity
     private FragmentPagerAdapter mAdapter;
     private List<Fragment> mFragments = new ArrayList<Fragment>();
 
+    private ViewPager mdrawerViewPager;
+    private FragmentPagerAdapter mdrawerAdapter;
+    private List<Fragment> mdrawerFragments = new ArrayList<Fragment>();
+
     /**
      * 底部四个按钮
      */
@@ -51,6 +52,10 @@ public class MainActivity extends AppCompatActivity
     private BaliseListFragment BaliseList;
     private LineFragment Line;
     private SettingFragment Setting;
+
+    private FrameDrawerFragment FrameDrawer;
+    private ControlFragment Control;
+
 
 
 
@@ -76,10 +81,13 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        /*
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        */
 
         mViewPager = (ViewPager) findViewById(R.id.id_viewpager);
+        mdrawerViewPager = (ViewPager) findViewById(R.id.id_drawerviewpager);
 
         initView();
 
@@ -99,14 +107,30 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
+        mdrawerAdapter = new FragmentPagerAdapter(getSupportFragmentManager())
+        {
+
+            @Override
+            public int getCount()
+            {
+                return mdrawerFragments.size();
+            }
+
+            @Override
+            public Fragment getItem(int arg0)
+            {
+                return mdrawerFragments.get(arg0);
+            }
+        };
+
         try {
             mViewPager.setAdapter(mAdapter);
+            mdrawerViewPager.setAdapter(mdrawerAdapter);
         }
         catch (Exception ex)
         {
             Log.d("zgx","mUserId====="+ex.toString());
         }
-
 
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener()
@@ -139,6 +163,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 currentIndex = position;
+                mdrawerViewPager.setCurrentItem(position);
             }
 
             @Override
@@ -198,6 +223,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        /*
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
@@ -211,7 +237,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_send) {
 
         }
-
+        */
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -249,6 +275,11 @@ public class MainActivity extends AppCompatActivity
         mFragments.add(BaliseList);
         mFragments.add(Line);
         mFragments.add(Setting);
+
+        FrameDrawer = new FrameDrawerFragment();
+        Control = new ControlFragment();
+        mdrawerFragments.add(FrameDrawer);
+        mdrawerFragments.add(Control);
 
     }
 

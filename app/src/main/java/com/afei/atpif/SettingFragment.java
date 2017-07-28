@@ -1,12 +1,18 @@
 package com.afei.atpif;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afei.atpif.CustomWidget.Legend;
+import com.afei.atpif.CustomWidget.LineChart;
+import com.afei.atpif.CustomWidget.LineData;
+import com.afei.atpif.CustomWidget.XAxis;
+import com.afei.atpif.CustomWidget.YAxis;
 import com.afei.atpif.R;
 
 import android.widget.TextView;
@@ -21,6 +27,8 @@ public class SettingFragment extends BaseFragment {
 
     private View view;
     TextView tv;
+
+    private LineChart ss;
 
     public SettingFragment() {
         // Required empty public constructor
@@ -48,6 +56,58 @@ public class SettingFragment extends BaseFragment {
         Log.d("Charming", charmer.askHowAreYou());
 
         startSleepyThread();
+
+        ss = (LineChart) view.findViewById(R.id.id_line_ll);
+
+        // enable description text
+        ss.getDescription().setEnabled(true);
+
+        // enable touch gestures
+        ss.setTouchEnabled(true);
+
+        // enable scaling and dragging
+        ss.setDragEnabled(true);
+        ss.setScaleEnabled(true);
+        ss.setDrawGridBackground(false);
+
+        // if disabled, scaling can be done on x- and y-axis separately
+        ss.setPinchZoom(true);
+
+        // set an alternative background color
+        ss.setBackgroundColor(Color.LTGRAY);
+
+
+        LineData data = new LineData();
+        data.setValueTextColor(Color.WHITE);
+
+        // add empty data
+        ss.setData(data);
+
+        // get the legend (only possible after setting data)
+        Legend l = ss.getLegend();
+
+        // modify the legend ...
+        l.setForm(Legend.LegendForm.LINE);
+
+        l.setTextColor(Color.WHITE);
+
+        XAxis xl = ss.getXAxis();
+
+        xl.setTextColor(Color.WHITE);
+        xl.setDrawGridLines(false);
+        xl.setAvoidFirstLastClipping(true);
+        xl.setEnabled(true);
+
+        YAxis leftAxis = ss.getAxisLeft();
+
+        leftAxis.setTextColor(Color.WHITE);
+        leftAxis.setAxisMaximum(10f);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setDrawGridLines(true);
+
+        YAxis rightAxis = ss.getAxisRight();
+        rightAxis.setEnabled(false);
+
 
         return view;
     }

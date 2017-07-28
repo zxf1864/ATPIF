@@ -11,4 +11,13 @@
         android:layout_height="match_parent"
         android:text="@string/hello_blank_fragment" />
 
+    <com.afei.atpif.CustomWidget.LineChart
+        android:id="@+id/id_line_ll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/line_speed"
+        android:background="#9999"/>
+
+
+
 </FrameLayout>

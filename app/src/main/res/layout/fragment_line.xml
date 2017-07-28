@@ -14,27 +14,33 @@
         android:gravity="center"
         android:orientation="vertical" >
 
-        <LinearLayout
-            android:id="@+id/id_list_frag"
-            android:layout_width="fill_parent"
-            android:layout_height="100dp"
-            android:background="#888">
-
-            <!-- TODO: Update blank fragment layout -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/hello_blank_fragment" />
-        </LinearLayout>
-
-        <com.github.mikephil.charting.charts.LineChart
+        <com.afei.atpif.FChart.FChart
             android:id="@+id/line_speed"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/id_list_frag"
             android:background="#9999"/>
 
-    </LinearLayout>
+            <!--
+            <LinearLayout
+                android:id="@+id/id_Linear_IO"
+                android:layout_width="fill_parent"
+                android:layout_height="360dp"
+                android:background="#888">
+
+
+                <com.afei.atpif.CustomWidget.LineChart
+                    android:id="@+id/id_line_IO"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/line_speed"
+                    android:background="#9999"/>
+
+            </LinearLayout>
+            -->
+
+
+
+</LinearLayout>
 
 
 
