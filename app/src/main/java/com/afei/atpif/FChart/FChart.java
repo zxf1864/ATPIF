@@ -27,6 +27,10 @@ public class FChart extends View{
 
     private List<LineData> linedata;
 
+    public XAxis getmXAxis() {
+        return mXAxis;
+    }
+
     /**
      * the object representing the labels on the x-axis
      */
@@ -134,6 +138,9 @@ public class FChart extends View{
 
     protected void drawChart(Canvas canvas)
     {
+
+
+
         if(mXAxis.isEnabled() == true)
             ;
 
@@ -144,6 +151,8 @@ public class FChart extends View{
             ;
 
         drawXaxis(canvas);
+
+        drawXaxisLabel(canvas);
 
     }
 
@@ -164,7 +173,22 @@ public class FChart extends View{
 
     protected void drawXaxisLabel(Canvas canvas)
     {
-        long curTimeMilis = System.currentTimeMillis();
+        mXAxis.calAxisInfo();
+
+        int w = getWidth();
+        int h = getHeight();
+
+        for(int i = 0; i < mXAxis.getAxisLabelsCount();i++)
+        {
+
+            canvas.drawText("qqq", 70 + i * w/mXAxis.getAxisLabelsCount(), h/2, mPaint);
+
+
+
+
+        }
+
+
 
 
 

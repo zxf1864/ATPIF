@@ -26,18 +26,39 @@ public class axisBase extends ComponentBase {
 
     private float mAxisLineWidth = 1f;
 
+    public void setAxisMax(float axisMax) {
+        this.axisMax = axisMax;
+    }
+
     private float axisMax = 0f;
+
+    public void setAxisMin(float axisMin) {
+        this.axisMin = axisMin;
+    }
 
     private float axisMin = 0f;
 
     private float axisRange;
 
-    private int axisDataCount = 100;
+    private int axisDataCount;
+
+    private float axisSpan ;
+
+    public int getAxisLabelsCount() {
+        return axisLabelsCount;
+    }
 
     private int axisLabelsCount = 10;
 
 
+    public void calAxisInfo()
+    {
+        axisRange = axisMax - axisMin;
 
+        axisDataCount =  Math.round(axisRange/axisSpan);
+
+
+    }
 
 
 

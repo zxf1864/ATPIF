@@ -79,6 +79,11 @@ public class LineFragment extends BaseFragment {
     {
         mSpeedChart = (FChart) view.findViewById(R.id.line_speed);
 
+        long curTimeMilis = System.currentTimeMillis();
+
+        mSpeedChart.getmXAxis().setAxisMin(curTimeMilis);
+        mSpeedChart.getmXAxis().setAxisMax(curTimeMilis + 1000*60*60);
+
         mSpeedChart.invalidate();
 
 
