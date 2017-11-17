@@ -2,7 +2,6 @@ package com.afei.atpif;
 
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,35 +9,25 @@ import android.view.ViewGroup;
 
 
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.widget.SeekBar;
 
 import com.afei.atpif.CustomWidget.ColorTemplate;
+import com.afei.atpif.CustomWidget.DataSet;
 import com.afei.atpif.CustomWidget.Entry;
 import com.afei.atpif.CustomWidget.ILineDataSet;
-import com.afei.atpif.CustomWidget.IOYFormatter;
 import com.afei.atpif.CustomWidget.Legend;
 import com.afei.atpif.CustomWidget.LineData;
 import com.afei.atpif.CustomWidget.LineDataSet;
 import com.afei.atpif.CustomWidget.XAxis;
 import com.afei.atpif.CustomWidget.YAxis;
 import com.afei.atpif.FChart.FChart;
-import com.afei.atpif.Model.IOData;
-import com.afei.atpif.Model.SpeedData;
+import com.afei.atpif.FChart.IOYFormatter;
+import com.afei.atpif.FChart.axisBase;
 import com.afei.atpif.CustomWidget.LineChart;
 
 
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.TimeUnit;
 
 
@@ -50,6 +39,8 @@ public class LineFragment extends BaseFragment {
     private View view;
     private FChart mSpeedChart;
     private LineChart mIOChart;
+
+    private long BaseMili = 0;
 
 
 
@@ -66,13 +57,112 @@ public class LineFragment extends BaseFragment {
 
         ConfigSpeedChart();
 
+        ConfigTestData();
+
         //ConfigIOChart();
 
 
-        //RefreshUI();
+        RefreshUI();
 
 
         return view;
+    }
+
+    private void ConfigTestData()
+    {
+        // now in hours
+        long now = TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis());
+
+        ArrayList<Entry> valuesSpeed = new ArrayList<Entry>();
+
+        ArrayList<Entry> valuesA = new ArrayList<Entry>();
+
+        ArrayList<Entry> valuesB = new ArrayList<Entry>();
+
+        ArrayList<Entry> valuesC = new ArrayList<Entry>();
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+
+        float from = now;
+
+        // count = hours
+        float to = now + 100;
+
+        // increment by 1 hour
+//        for (float x = from; x < to; x++) {
+//
+//            float y = 50 + getRandom(20, 10);
+//            valuesA.add(new Entry(x, y)); // add one entry per hour
+//            valuesB.add(new Entry(x, y+50));
+//        }
+
+        LineDataSet setSpeed = new LineDataSet(valuesSpeed, "Speed");
+        setSpeed.setAxisDependency(YAxis.AxisDependency.LEFT);
+        setSpeed.setColor(ColorTemplate.getHoloBlue());
+        setSpeed.setValueTextColor(ColorTemplate.getHoloBlue());
+        setSpeed.setLineWidth(1.5f);
+        setSpeed.setDrawCircles(false);
+        setSpeed.setDrawValues(false);
+        setSpeed.setFillAlpha(65);
+        setSpeed.setFillColor(ColorTemplate.getHoloBlue());
+        setSpeed.setHighLightColor(Color.rgb(244, 117, 117));
+        setSpeed.setDrawCircleHole(false);
+        dataSets.add(setSpeed);
+
+
+        // create a dataset and give it a type
+        LineDataSet set1 = new LineDataSet(valuesA, "TCR");
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set1.setColor(ColorTemplate.getHoloBlue());
+        set1.setValueTextColor(ColorTemplate.getHoloBlue());
+        set1.setLineWidth(1.5f);
+        set1.setDrawCircles(false);
+        set1.setDrawValues(false);
+        set1.setFillAlpha(65);
+        set1.setFillColor(ColorTemplate.getHoloBlue());
+        set1.setHighLightColor(Color.rgb(244, 117, 117));
+        set1.setDrawCircleHole(false);
+
+
+        dataSets.add(set1);
+
+        LineDataSet set2 = new LineDataSet(valuesB, "BTM");
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set1.setColor(ColorTemplate.getHoloBlue());
+        set1.setValueTextColor(ColorTemplate.getHoloBlue());
+        set1.setLineWidth(1.5f);
+        set1.setDrawCircles(false);
+        set1.setDrawValues(false);
+        set1.setFillAlpha(65);
+        set1.setFillColor(ColorTemplate.getHoloBlue());
+        set1.setHighLightColor(Color.rgb(244, 117, 117));
+        set1.setDrawCircleHole(false);
+
+        dataSets.add(set2);
+
+        LineDataSet set3 = new LineDataSet(valuesC, "EB");
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set1.setColor(ColorTemplate.getHoloBlue());
+        set1.setValueTextColor(ColorTemplate.getHoloBlue());
+        set1.setLineWidth(1.5f);
+        set1.setDrawCircles(false);
+        set1.setDrawValues(false);
+        set1.setFillAlpha(65);
+        set1.setFillColor(ColorTemplate.getHoloBlue());
+        set1.setHighLightColor(Color.rgb(244, 117, 117));
+        set1.setDrawCircleHole(false);
+
+        dataSets.add(set3);
+
+
+        // create a data object with the datasets
+        LineData data = new LineData(dataSets);
+        data.setValueTextColor(Color.WHITE);
+        data.setValueTextSize(9f);
+
+        mSpeedChart.addLineData(data);
+
+
     }
 
     private void ConfigSpeedChart()
@@ -81,8 +171,22 @@ public class LineFragment extends BaseFragment {
 
         long curTimeMilis = System.currentTimeMillis();
 
-        mSpeedChart.getmXAxis().setAxisMin(curTimeMilis);
-        mSpeedChart.getmXAxis().setAxisMax(curTimeMilis + 1000*60*60);
+        BaseMili = curTimeMilis;
+
+        mSpeedChart.getmXAxis().setAxisMin(0);
+        mSpeedChart.getmXAxis().setAxisMax(0 + 1000*60);
+        mSpeedChart.getmXAxis().setBaseTime(BaseMili);
+
+
+        List<String> labels =  new ArrayList<>();
+        labels.add("PWN_DO01");
+        labels.add("CAB_DO02");
+        labels.add(" EB_DO03");
+        labels.add(" RB_DO04");
+
+        IOYFormatter myXFormatter = new IOYFormatter(labels);
+        mSpeedChart.getmYAxisIO().setValueFormatter(myXFormatter);
+
 
         mSpeedChart.invalidate();
 
@@ -153,64 +257,64 @@ public class LineFragment extends BaseFragment {
     }
 
 
-    private void ConfigIOChart()
-    {
-        //mIOChart = (LineChart) view.findViewById(R.id.id_line_IO);
-
-        // enable description text
-        mIOChart.getDescription().setEnabled(true);
-
-        // enable touch gestures
-        mIOChart.setTouchEnabled(true);
-
-        // enable scaling and dragging
-        mIOChart.setDragEnabled(true);
-        mIOChart.setScaleEnabled(true);
-        mIOChart.setDrawGridBackground(false);
-
-        // if disabled, scaling can be done on x- and y-axis separately
-        mIOChart.setPinchZoom(true);
-
-        // set an alternative background color
-        mIOChart.setBackgroundColor(Color.LTGRAY);
-
-        LineData data = new LineData();
-        data.setValueTextColor(Color.WHITE);
-
-        // add empty data
-        mIOChart.setData(data);
-
-        // get the legend (only possible after setting data)
-        Legend l = mIOChart.getLegend();
-
-        // modify the legend ...
-        l.setForm(Legend.LegendForm.LINE);
-
-        l.setTextColor(Color.WHITE);
-
-        XAxis xl = mIOChart.getXAxis();
-
-        xl.setTextColor(Color.WHITE);
-        xl.setAxisLineColor(Color.RED);
-        xl.setDrawGridLines(false);
-        xl.setAvoidFirstLastClipping(true);
-        xl.setEnabled(true);
-
-        YAxis leftAxis = mIOChart.getAxisLeft();
-
-        leftAxis.setTextColor(Color.RED);
-
-        leftAxis.setDrawGridLines(true);
-
-        List<String> labels =  new ArrayList<>();
-        labels.add("PWN");
-        labels.add("CAB");
-        labels.add(" EB");
-
-        IOYFormatter myXFormatter = new IOYFormatter(labels);
-        leftAxis.setValueFormatter(myXFormatter);
-
-    }
+//    private void ConfigIOChart()
+//    {
+//        //mIOChart = (LineChart) view.findViewById(R.id.id_line_IO);
+//
+//        // enable description text
+//        mIOChart.getDescription().setEnabled(true);
+//
+//        // enable touch gestures
+//        mIOChart.setTouchEnabled(true);
+//
+//        // enable scaling and dragging
+//        mIOChart.setDragEnabled(true);
+//        mIOChart.setScaleEnabled(true);
+//        mIOChart.setDrawGridBackground(false);
+//
+//        // if disabled, scaling can be done on x- and y-axis separately
+//        mIOChart.setPinchZoom(true);
+//
+//        // set an alternative background color
+//        mIOChart.setBackgroundColor(Color.LTGRAY);
+//
+//        LineData data = new LineData();
+//        data.setValueTextColor(Color.WHITE);
+//
+//        // add empty data
+//        mIOChart.setData(data);
+//
+//        // get the legend (only possible after setting data)
+//        Legend l = mIOChart.getLegend();
+//
+//        // modify the legend ...
+//        l.setForm(Legend.LegendForm.LINE);
+//
+//        l.setTextColor(Color.WHITE);
+//
+//        XAxis xl = mIOChart.getXAxis();
+//
+//        xl.setTextColor(Color.WHITE);
+//        xl.setAxisLineColor(Color.RED);
+//        xl.setDrawGridLines(false);
+//        xl.setAvoidFirstLastClipping(true);
+//        xl.setEnabled(true);
+//
+//        YAxis leftAxis = mIOChart.getAxisLeft();
+//
+//        leftAxis.setTextColor(Color.RED);
+//
+//        leftAxis.setDrawGridLines(true);
+//
+//        List<String> labels =  new ArrayList<>();
+//        labels.add("PWN_DO01");
+//        labels.add("CAB_DO02");
+//        labels.add(" EB_DO03");
+//
+//        //axisBase.IOYFormatter myXFormatter = new axisBase.IOYFormatter(labels);
+//        //leftAxis.setValueFormatter(myXFormatter);
+//
+//    }
 
 
 
@@ -386,114 +490,114 @@ public class LineFragment extends BaseFragment {
     }
 
 
-    private synchronized void UpdateIOLine()
-    {
-        LineData data = mIOChart.getData();
-
-        com.afei.atpif.Model.LineData ld = com.afei.atpif.Model.LineData.getInstance();
-        IOData IO = ld.GetIOData();
-
-        ArrayList<Entry> TIUtemp = IO.GetTIUData();
-        ArrayList<Entry> BIUtemp = IO.GetBIUData();
-
-
-        if ((data != null)&&((TIUtemp.size()>0)||(BIUtemp.size()>0))) {
-
-            ILineDataSet set = data.getDataSetByIndex(0);
-            // set.addEntry(...); // can be called as well
-
-            if (set == null) {
-                set = createPWRSet();
-                data.addDataSet(set);
-                /*
-                ILineDataSet cabset = createCABSet();
-                data.addDataSet(cabset);
-                ILineDataSet fwrset = createFWRSet();
-                data.addDataSet(fwrset);
-                */
-            }
-
-
-            for (int i=data.getEntryCount();i<BIUtemp.size();i++)
-            {
-                IO.setBiudata((int)BIUtemp.get(i).getY());
-                data.addEntry(new Entry(BIUtemp.get(i).getX(),IO.getBIU().GetDI05_EB()), 0);
-
-            }
-
-            data.notifyDataChanged();
-
-            // let the chart know it's data has changed
-            mIOChart.notifyDataSetChanged();
-
-            // limit the number of visible entries
-            //mChart.setVisibleXRangeMinimum(0);
-            //mChart.setVisibleXRangeMaximum(120);
-            // mChart.setVisibleYRange(30, AxisDependency.LEFT);
-
-            // move to the latest entry
-            mIOChart.moveViewToX(data.getEntryCount());
-
-            // this automatically refreshes the chart (calls invalidate())
-            // mChart.moveViewTo(data.getXValCount()-7, 55f,
-            // AxisDependency.LEFT);
-        }
-
-    }
-
-    /*
-    private synchronized void UpdateSpeedLine()
-    {
-        LineData data = mSpeedChart.getData();
-
-        com.afei.atpif.Model.LineData ld = com.afei.atpif.Model.LineData.getInstance();
-        SpeedData sd = ld.GetSpeedData();
-
-        ArrayList<Entry> acctemp = sd.GetaccData();
-        ArrayList<Entry> speedtemp = sd.GetSpeedData();
-        ArrayList<Entry> postiontemp = sd.GetpotionData();
-
-        if ((data != null)&&(speedtemp.size()>0)) {
-
-            ILineDataSet set = data.getDataSetByIndex(0);
-            // set.addEntry(...); // can be called as well
-
-            if (set == null) {
-                set = createSpeedSet();
-                data.addDataSet(set);
-                ILineDataSet accset = createAccSet();
-                data.addDataSet(accset);
-                ILineDataSet postionset = createPostionSet();
-                data.addDataSet(postionset);
-            }
-
-
-            for (int i=data.getEntryCount()/3;i<speedtemp.size();i++)
-            {
-                data.addEntry(speedtemp.get(i), 0);
-                data.addEntry(acctemp.get(i), 1);
-                data.addEntry(postiontemp.get(i), 2);
-            }
-
-            data.notifyDataChanged();
-
-            // let the chart know it's data has changed
-            mSpeedChart.notifyDataSetChanged();
-
-            // limit the number of visible entries
-            //mChart.setVisibleXRangeMinimum(0);
-            //mChart.setVisibleXRangeMaximum(120);
-            // mChart.setVisibleYRange(30, AxisDependency.LEFT);
-
-            // move to the latest entry
-            mSpeedChart.moveViewToX(data.getEntryCount());
-
-            // this automatically refreshes the chart (calls invalidate())
-            // mChart.moveViewTo(data.getXValCount()-7, 55f,
-            // AxisDependency.LEFT);
-        }
-
-    }
+//    private synchronized void UpdateIOLine()
+//    {
+//        LineData data = mIOChart.getData();
+//
+//        com.afei.atpif.Model.LineData ld = com.afei.atpif.Model.LineData.getInstance();
+//        IOData IO = ld.GetIOData();
+//
+//        ArrayList<Entry> TIUtemp = IO.GetTIUData();
+//        ArrayList<Entry> BIUtemp = IO.GetBIUData();
+//
+//
+//        if ((data != null)&&((TIUtemp.size()>0)||(BIUtemp.size()>0))) {
+//
+//            ILineDataSet set = data.getDataSetByIndex(0);
+//            // set.addEntry(...); // can be called as well
+//
+//            if (set == null) {
+//                set = createPWRSet();
+//                data.addDataSet(set);
+//                /*
+//                ILineDataSet cabset = createCABSet();
+//                data.addDataSet(cabset);
+//                ILineDataSet fwrset = createFWRSet();
+//                data.addDataSet(fwrset);
+//                */
+//            }
+//
+//
+//            for (int i=data.getEntryCount();i<BIUtemp.size();i++)
+//            {
+//                IO.setBiudata((int)BIUtemp.get(i).getY());
+//                data.addEntry(new Entry(BIUtemp.get(i).getX(),IO.getBIU().GetDI05_EB()), 0);
+//
+//            }
+//
+//            data.notifyDataChanged();
+//
+//            // let the chart know it's data has changed
+//            mIOChart.notifyDataSetChanged();
+//
+//            // limit the number of visible entries
+//            //mChart.setVisibleXRangeMinimum(0);
+//            //mChart.setVisibleXRangeMaximum(120);
+//            // mChart.setVisibleYRange(30, AxisDependency.LEFT);
+//
+//            // move to the latest entry
+//            mIOChart.moveViewToX(data.getEntryCount());
+//
+//            // this automatically refreshes the chart (calls invalidate())
+//            // mChart.moveViewTo(data.getXValCount()-7, 55f,
+//            // AxisDependency.LEFT);
+//        }
+//
+//    }
+//
+//
+//    private synchronized void UpdateSpeedLine()
+//    {
+//        LineData data = mSpeedChart.getData();
+//
+//        com.afei.atpif.Model.LineData ld = com.afei.atpif.Model.LineData.getInstance();
+//        SpeedData sd = ld.GetSpeedData();
+//
+//        ArrayList<Entry> acctemp = sd.GetaccData();
+//        ArrayList<Entry> speedtemp = sd.GetSpeedData();
+//        ArrayList<Entry> postiontemp = sd.GetpotionData();
+//
+//        if ((data != null)&&(speedtemp.size()>0)) {
+//
+//            ILineDataSet set = data.getDataSetByIndex(0);
+//            // set.addEntry(...); // can be called as well
+//
+//            if (set == null) {
+//                set = createSpeedSet();
+//                data.addDataSet(set);
+//                ILineDataSet accset = createAccSet();
+//                data.addDataSet(accset);
+//                ILineDataSet postionset = createPostionSet();
+//                data.addDataSet(postionset);
+//            }
+//
+//
+//            for (int i=data.getEntryCount()/3;i<speedtemp.size();i++)
+//            {
+//                data.addEntry(speedtemp.get(i), 0);
+//                data.addEntry(acctemp.get(i), 1);
+//                data.addEntry(postiontemp.get(i), 2);
+//            }
+//
+//            data.notifyDataChanged();
+//
+//            // let the chart know it's data has changed
+//            mSpeedChart.notifyDataSetChanged();
+//
+//            // limit the number of visible entries
+//            //mChart.setVisibleXRangeMinimum(0);
+//            //mChart.setVisibleXRangeMaximum(120);
+//            // mChart.setVisibleYRange(30, AxisDependency.LEFT);
+//
+//            // move to the latest entry
+//            mSpeedChart.moveViewToX(data.getEntryCount());
+//
+//            // this automatically refreshes the chart (calls invalidate())
+//            // mChart.moveViewTo(data.getXValCount()-7, 55f,
+//            // AxisDependency.LEFT);
+//        }
+//
+//    }
 
     private Thread thread;
     private void RefreshUI() {
@@ -505,8 +609,36 @@ public class LineFragment extends BaseFragment {
 
             @Override
             public void run() {
-                UpdateSpeedLine();
-                UpdateIOLine();
+                //UpdateSpeedLine();
+                //UpdateIOLine();
+
+                LineData ld = mSpeedChart.getLinedata().get(0);
+                //Entry data = ((DataSet<Entry>)ld.getDataSetByIndex(0)).getEntryForIndex(i);
+                long curTimeMilis = System.currentTimeMillis();
+                Entry data = new Entry();
+                data.setX(curTimeMilis - BaseMili);
+                data.setY(Math.round(Math.random()*300));
+                ((DataSet<Entry>)ld.getDataSetByIndex(0)).addEntry(data);
+
+                Entry dataBTM = new Entry();
+                dataBTM.setX(curTimeMilis - BaseMili);
+                dataBTM.setY(Math.round(Math.random()));
+                ((DataSet<Entry>)ld.getDataSetByIndex(1)).addEntry(dataBTM);
+
+                Entry dataEB = new Entry();
+                dataEB.setX(curTimeMilis - BaseMili);
+                dataEB.setY(Math.round(Math.random()*2 -1));
+                ((DataSet<Entry>)ld.getDataSetByIndex(2)).addEntry(dataEB);
+                //ld.notifyDataChanged();
+
+                ld.notifyDataChanged();
+
+                mSpeedChart.invalidate();
+
+
+
+
+
             }
         };
 
@@ -520,7 +652,8 @@ public class LineFragment extends BaseFragment {
                     getActivity().runOnUiThread(runnable);
 
                     try {
-                        Thread.sleep(25);
+                        //Thread.sleep(25);
+                        Thread.sleep(500);
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -531,6 +664,6 @@ public class LineFragment extends BaseFragment {
 
         thread.start();
     }
-   */
+
 
 }

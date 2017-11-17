@@ -11,4 +11,25 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+
+    <string name="action_enter_app">进入主界面</string>
+
+    <string name="item_top_title">接口平台名称</string>
+    <string name="item_top_left_title">平台IP</string>
+    <string name="item_top_center_title">接入个数</string>
+    <string name="item_top_right_title">最后接入时间</string>
+
+
+
+    <!-- 自定义组件 -->
+    <string name="pull_to_refresh">下拉可以刷新</string>
+    <string name="release_to_refresh">松开可以刷新</string>
+    <string name="lastUpdateTime">最近更新：%s</string>
+    <string name="load_full">已加载全部</string>
+    <string name="no_data">暂无数据</string>
+    <string name="more">加载中</string>
+
+    <!-- 消除警告，可忽略 -->
+    <string name="d">图片描述</string>
+
 </resources>

@@ -17,15 +17,19 @@
             android:name=".MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <service android:name=".SocketClient.NettyService" />
+
+        <activity
+            android:name=".Splash.Lanuncher"
+            android:theme="@style/AppTheme.LauncherTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service android:name=".SocketClient.NettyService" />
 
     </application>
 

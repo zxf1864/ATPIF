@@ -1,4 +1,4 @@
-package com.afei.atpif.CustomWidget;
+package com.afei.atpif.FChart;
 
 import java.util.List;
 
@@ -7,14 +7,18 @@ import java.util.List;
  */
 
 
-
 public class IOYFormatter implements IAxisValueFormatter {
+    public List<String> getmValues() {
+        return mValues;
+    }
+
     List<String> mValues;
+
     public IOYFormatter(List<String> values) {
         this.mValues = values;
     }
     @Override
-    public String getFormattedValue(float value, AxisBase axis) {
+    public String getFormattedValue(float value, axisBase axis) {
         int i = (int) value % mValues.size();
         return mValues.get(i);
     }

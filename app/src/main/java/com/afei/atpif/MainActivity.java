@@ -1,6 +1,7 @@
 package com.afei.atpif;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.afei.atpif.SocketClient.NettyService;
+import com.afei.atpif.Util.StatusBarUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,8 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
 {
+
+    private Toolbar mToolBar;
 
     private ViewPager mViewPager;
     private FragmentPagerAdapter mAdapter;
@@ -63,10 +67,14 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        StatusBarUtils.setWindowStatusBarColor(this, R.color.header_color);
+
+        mToolBar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolBar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,7 +85,7 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, mToolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -135,6 +143,9 @@ public class MainActivity extends AppCompatActivity
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener()
         {
+            public int getCurrentIndex() {
+                return currentIndex;
+            }
 
             private int currentIndex;
 
@@ -155,6 +166,7 @@ public class MainActivity extends AppCompatActivity
                     case 2:
                         ((ImageButton) mTabBtnAddress.findViewById(R.id.btn_tab_bottom_contact))
                                 .setImageResource(R.drawable.tab_address_pressed);
+                        mToolBar.setVisibility(View.GONE);
                         break;
                     case 3:
                         ((ImageButton) mTabBtnSettings.findViewById(R.id.btn_tab_bottom_setting))
@@ -177,7 +189,6 @@ public class MainActivity extends AppCompatActivity
             {
             }
         });
-
 
 
         Timber.plant(new Timber.DebugTree());
@@ -260,12 +271,6 @@ public class MainActivity extends AppCompatActivity
 
     private void initView()
     {
-
-        mTabBtnWeixin = (LinearLayout) findViewById(R.id.id_tab_bottom_weixin);
-        mTabBtnFrd = (LinearLayout) findViewById(R.id.id_tab_bottom_friend);
-        mTabBtnAddress = (LinearLayout) findViewById(R.id.id_tab_bottom_contact);
-        mTabBtnSettings = (LinearLayout) findViewById(R.id.id_tab_bottom_setting);
-
         TrainList = new TrainListFragment();
         BaliseList = new BaliseListFragment();
         Line = new LineFragment();
@@ -280,6 +285,86 @@ public class MainActivity extends AppCompatActivity
         Control = new ControlFragment();
         mdrawerFragments.add(FrameDrawer);
         mdrawerFragments.add(Control);
+
+        mTabBtnWeixin = (LinearLayout) findViewById(R.id.id_tab_bottom_weixin);
+        //1.匿名内部类
+        mTabBtnWeixin.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Log.i("匿名内部类", "点击事件");
+
+                resetTabBtn();
+
+                ((ImageButton) mTabBtnWeixin.findViewById(R.id.btn_tab_bottom_weixin))
+                        .setImageResource(R.drawable.tab_weixin_pressed);
+
+                mdrawerViewPager.setCurrentItem(0);
+                mViewPager.setCurrentItem(0);
+            }
+        });
+
+        mTabBtnFrd = (LinearLayout) findViewById(R.id.id_tab_bottom_friend);
+
+        //1.匿名内部类
+        mTabBtnFrd.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Log.i("匿名内部类", "点击事件");
+
+                resetTabBtn();
+
+                ((ImageButton) mTabBtnFrd.findViewById(R.id.btn_tab_bottom_friend))
+                        .setImageResource(R.drawable.tab_find_frd_pressed);
+
+                mdrawerViewPager.setCurrentItem(1);
+                mViewPager.setCurrentItem(1);
+            }
+        });
+
+        mTabBtnAddress = (LinearLayout) findViewById(R.id.id_tab_bottom_contact);
+
+        //1.匿名内部类
+        mTabBtnAddress.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Log.i("匿名内部类", "点击事件");
+
+                resetTabBtn();
+
+                ((ImageButton) mTabBtnAddress.findViewById(R.id.btn_tab_bottom_contact))
+                        .setImageResource(R.drawable.tab_address_pressed);
+                mToolBar.setVisibility(View.GONE);
+
+                mdrawerViewPager.setCurrentItem(2);
+                mViewPager.setCurrentItem(2);
+            }
+        });
+
+        mTabBtnSettings = (LinearLayout) findViewById(R.id.id_tab_bottom_setting);
+
+        //1.匿名内部类
+        mTabBtnSettings.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Log.i("匿名内部类", "点击事件");
+
+                resetTabBtn();
+
+                ((ImageButton) mTabBtnSettings.findViewById(R.id.btn_tab_bottom_setting))
+                        .setImageResource(R.drawable.tab_settings_pressed);
+
+                mdrawerViewPager.setCurrentItem(3);
+                mViewPager.setCurrentItem(3);
+            }
+        });
 
     }
 

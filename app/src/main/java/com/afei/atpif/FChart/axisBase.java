@@ -1,11 +1,11 @@
 package com.afei.atpif.FChart;
 
 import android.graphics.Color;
-import android.graphics.Typeface;
 
+import com.afei.atpif.CustomWidget.AxisBase;
 import com.afei.atpif.CustomWidget.ComponentBase;
-import com.afei.atpif.CustomWidget.IAxisValueFormatter;
-import com.afei.atpif.CustomWidget.Utils;
+
+import java.util.List;
 
 /**
  * Created by afei on 2017/7/28.
@@ -13,12 +13,17 @@ import com.afei.atpif.CustomWidget.Utils;
 
 public class axisBase extends ComponentBase {
 
+    public IAxisValueFormatter getmAxisValueFormatter() {
+        return mAxisValueFormatter;
+    }
+
     /**
      * custom formatter that is used instead of the auto-formatter if set
      */
     protected IAxisValueFormatter mAxisValueFormatter;
 
     private int mGridColor = Color.GRAY;
+
 
     private float mGridLineWidth = 1f;
 
@@ -30,13 +35,29 @@ public class axisBase extends ComponentBase {
         this.axisMax = axisMax;
     }
 
+    public float getAxisMax() {
+        return axisMax;
+    }
+
     private float axisMax = 0f;
 
     public void setAxisMin(float axisMin) {
         this.axisMin = axisMin;
     }
 
+    public float getAxisMin() {
+        return axisMin;
+    }
+
     private float axisMin = 0f;
+
+    public float getAxisRange() {
+        return axisRange;
+    }
+
+    public void setAxisRange(float axisRange) {
+        this.axisRange = axisRange;
+    }
 
     private float axisRange;
 
@@ -50,6 +71,35 @@ public class axisBase extends ComponentBase {
 
     private int axisLabelsCount = 10;
 
+    /**
+     * the number of decimal digits to use
+     */
+    public int mDecimals;
+
+
+    public axisBase()
+    {
+
+    }
+
+
+    /**
+     * Sets the formatter to be used for formatting the axis labels. If no formatter is set, the
+     * chart will
+     * automatically determine a reasonable formatting (concerning decimals) for all the values
+     * that are drawn inside
+     * the chart. Use chart.getDefaultValueFormatter() to use the formatter calculated by the chart.
+     *
+     * @param f
+     */
+    public void setValueFormatter(IAxisValueFormatter f) {
+
+        if (f == null)
+            mAxisValueFormatter = new DefaultAxisValueFormatter(mDecimals);
+        else
+            mAxisValueFormatter = f;
+    }
+
 
     public void calAxisInfo()
     {
@@ -59,7 +109,6 @@ public class axisBase extends ComponentBase {
 
 
     }
-
 
 
 

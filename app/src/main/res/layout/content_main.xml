@@ -27,7 +27,7 @@
 
 
         <include layout="@layout/bottom_bar"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_width="fill_parent"
             android:layout_below="@id/id_viewpager" />
     </LinearLayout>

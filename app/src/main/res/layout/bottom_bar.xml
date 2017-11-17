@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ly_main_tab_bottom"
     android:layout_width="fill_parent"
-    android:layout_height="55dp"
+    android:layout_height="60dp"
     android:layout_alignParentBottom="true"
     android:background="@drawable/bottom_bar" >
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="55dp" >
+        android:layout_height="60dp" >
 
         <LinearLayout
             android:id="@+id/id_tab_bottom_weixin"
@@ -30,7 +30,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="微信" />
+                android:text="列表"
+                android:textColor="@color/tab_text_color"
+                />
         </LinearLayout>
 
         <LinearLayout
@@ -53,7 +55,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="朋友" />
+                android:text="脚本"
+                android:textColor="@color/tab_text_color" />
         </LinearLayout>
 
         <LinearLayout
@@ -76,7 +79,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="通讯录" />
+                android:text="曲线"
+                android:textColor="@color/tab_text_color"/>
         </LinearLayout>
 
         <LinearLayout
@@ -99,7 +103,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="设置" />
+                android:text="设置"
+                android:textColor="@color/tab_text_color"/>
         </LinearLayout>
     </LinearLayout>
 
