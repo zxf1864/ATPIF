@@ -43,7 +43,10 @@ buildscript {
     }
 }
 
-
+project.ext {
+    testCoverage = project.hasProperty('testCoverage')
+    optimizeForDevelopment = project.hasProperty('optimizeForDevelopment') && optimizeForDevelopment == 'true'
+}
 
 task clean(type: Delete) {
     delete rootProject.buildDir

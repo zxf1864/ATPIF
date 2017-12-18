@@ -1,1 +1,3 @@
-include ':app'
+include ':app', ':HoloColorPicker', ':k9mail-library', ':openpgp-api'
+project(':HoloColorPicker').projectDir = new File('plugins/HoloColorPicker')
+project(':openpgp-api').projectDir = new File('plugins/openpgp-api-lib/openpgp-api')

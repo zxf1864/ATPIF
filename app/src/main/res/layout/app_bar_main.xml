@@ -18,6 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="#111"
+            app:title = "车载工具助手"
+
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>

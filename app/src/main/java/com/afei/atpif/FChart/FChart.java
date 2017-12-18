@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -81,7 +83,9 @@ public class FChart extends View {
     /* 数据线颜色 */
     private int color_data_line = Color.parseColor("#ffaa00");
 
-
+    /* 画布宽高 */
+    private int w = 0;
+    private int h = 0;
     /**
      * default constructor for initialization in code
      */
@@ -105,8 +109,20 @@ public class FChart extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        w = getWidth();
+        h = getHeight();
+
         // 设置画布颜色
-        canvas.drawColor(color_canvas);
+        canvas.drawColor(Color.BLACK);
+//        RectF rc = new RectF();
+//        rc.set(0,0,w,h);
+//        Path path = new Path();
+//        path.addRect(rc, Path.Direction.CW);
+//
+//        mPaint.setColor(0x6634DE71);
+//        mPaint.setStyle(Paint.Style.FILL);
+//        mPaint.setAlpha(38);
+//        canvas.drawPath(path, mPaint);
         // 绘制数据加载提示
         if (null == this.linedata) {
             drawChart(canvas);
@@ -139,7 +155,7 @@ public class FChart extends View {
         mPaint = new Paint();
         mPaint.setColor(Color.RED);
         mPaint.setStrokeWidth(1f);
-        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         // initialize the utils
         Utils.init(getContext());
@@ -270,15 +286,15 @@ public class FChart extends View {
         if(io != null)
         {
             mIOBottom = h - 40f;
-            mIOTop = h - 20*io.mValues.size();
-            mSpeedBottom = mIOTop - mBTMheight - mTCRheight;
+            mIOTop = mIOBottom - 30*io.mValues.size() - 40f;
+            mSpeedBottom = mIOTop - mBTMheight - mTCRheight -40f;
             mSpeedTop = 40f;
         }
         else
         {
             mIOBottom = h - 40f;
             mIOTop = mIOBottom;
-            mSpeedBottom = mIOTop - mBTMheight - mTCRheight;
+            mSpeedBottom = mIOTop - mBTMheight - mTCRheight - 40f;
             mSpeedTop = 40f;
         }
 
@@ -294,7 +310,9 @@ public class FChart extends View {
 
         CalspeedIOpartNum();
 
-        drawXaxis(canvas);
+        drawSpeedBottomLine(canvas);
+
+        drawBaseLine(canvas);
 
         drawXaxisLabel(canvas);
 
@@ -302,9 +320,13 @@ public class FChart extends View {
 
         drawSpeedYaxisLabel(canvas);
 
+        DrawSpeedDataGrid(canvas);
+
         drawSpeedData(canvas);
 
         drawIOYaxisLabel(canvas);
+
+        DrawIODataBaseLine(canvas);
 
         drawTCRLabel(canvas);
 
@@ -318,12 +340,49 @@ public class FChart extends View {
 
     }
 
+    private void DrawIODataBaseLine(Canvas canvas)
+    {
+        int w = getWidth();
+        int h = getHeight();
+
+        mPaint.setTextSize(15);
+
+        IOYFormatter io = (IOYFormatter)mYAxisIO.getmAxisValueFormatter();
+
+        if(io == null)
+            return;
+
+        for (int i = 0; i < io.getmValues().size(); i++) {
+            canvas.drawLine(100,mIOTop + 40f + 15f + 30*i,this.getRight(),mIOTop + 40f + 15f + 30*i,mPaint);
+        }
+
+    }
+
+    private void DrawSpeedDataGrid(Canvas canvas)
+    {
+        mYAxisSpeed.calAxisInfo();
+
+        int w = getWidth();
+        int h = getHeight();
+
+        mPaint.setColor(Color.LTGRAY);
+        mPaint.setStrokeWidth(2f);
+
+        for (int i = 1; i < mYAxisSpeed.getAxisLabelsCount(); i++) {
+
+            float y_pos = mSpeedBottom-i*(mSpeedBottom - mSpeedTop)/mYAxisSpeed.getAxisLabelsCount();
+
+            canvas.drawLine(100, y_pos, this.getRight(), y_pos, mPaint);// 画线
+
+        }
+    }
+
     private void drawSpeedData(Canvas canvas)
     {
         Paint mSpeedLinePaint = new Paint();
-        mSpeedLinePaint.setColor(Color.YELLOW);
-        mSpeedLinePaint.setStrokeWidth(5f);
-        mSpeedLinePaint.setStyle(Paint.Style.STROKE);
+        mSpeedLinePaint.setColor(Color.GREEN);
+        mSpeedLinePaint.setStrokeWidth(3f);
+        mSpeedLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         mYAxisSpeed.calAxisInfo();
 
@@ -352,14 +411,42 @@ public class FChart extends View {
 
     }
 
-    protected void drawXaxis(Canvas canvas) {
+    protected void drawSpeedBottomLine(Canvas canvas) {
         int w = getWidth();
         int h = getHeight();
 
         Paint mAxisLinePaint = new Paint();
         mAxisLinePaint.setColor(Color.RED);
-        mAxisLinePaint.setStrokeWidth(1f);
-        mAxisLinePaint.setStyle(Paint.Style.STROKE);
+        mAxisLinePaint.setStrokeWidth(4f);
+        mAxisLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+
+        canvas.drawLine(this.getLeft(),
+                mSpeedBottom, this.getRight(),
+                mSpeedBottom, mAxisLinePaint);
+    }
+
+    protected void drawBaseLine(Canvas canvas) {
+        int w = getWidth();
+        int h = getHeight();
+
+        Paint mAxisLinePaint = new Paint();
+        mAxisLinePaint.setColor(Color.WHITE);
+        mAxisLinePaint.setStrokeWidth(4f);
+        mAxisLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+
+        canvas.drawLine(this.getLeft(),
+                mIOTop, this.getRight(),
+                mIOTop, mAxisLinePaint);
+    }
+
+    protected void drawXaxis(Canvas canvas) {
+        int w = getWidth();
+        int h = getHeight();
+
+        Paint mAxisLinePaint = new Paint();
+        mAxisLinePaint.setColor(Color.WHITE);
+        mAxisLinePaint.setStrokeWidth(2f);
+        mAxisLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         canvas.drawLine(this.getLeft(),
                 mSpeedBottom, this.getRight(),
@@ -371,9 +458,9 @@ public class FChart extends View {
         int h = getHeight();
 
         Paint mAxisLinePaint = new Paint();
-        mAxisLinePaint.setColor(Color.RED);
-        mAxisLinePaint.setStrokeWidth(1f);
-        mAxisLinePaint.setStyle(Paint.Style.STROKE);
+        mAxisLinePaint.setColor(Color.WHITE);
+        mAxisLinePaint.setStrokeWidth(2f);
+        mAxisLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         canvas.drawLine(mYAxisSpeed.getOffsetYAxis(),
                 mSpeedTop, mYAxisSpeed.getOffsetYAxis(),
@@ -386,6 +473,7 @@ public class FChart extends View {
         int w = getWidth();
         int h = getHeight();
 
+        mPaint.setColor(Color.WHITE);
         mPaint.setTextSize(20);
 
 
@@ -396,7 +484,7 @@ public class FChart extends View {
 
             String str = sdf.format(d);
 
-            canvas.drawText(str, 100 + i * (w -100) / mXAxis.getAxisLabelsCount(), mSpeedBottom + 20, mPaint);
+            canvas.drawText(str, 100 + i * (w -100) / mXAxis.getAxisLabelsCount() + 5, mIOTop + 20 + 5, mPaint);
 
         }
 
@@ -408,7 +496,8 @@ public class FChart extends View {
         int w = getWidth();
         int h = getHeight();
 
-        mPaint.setTextSize(20);
+        mPaint.setColor(Color.WHITE);
+        mPaint.setTextSize(36);
 
         for (int i = 0; i < mYAxisSpeed.getAxisLabelsCount(); i++) {
 
@@ -420,7 +509,9 @@ public class FChart extends View {
 
             ylabel = String.valueOf(ylabel_int);
 
-            canvas.drawText(ylabel, 5, (mYAxisSpeed.getAxisLabelsCount()-i)*(mSpeedBottom - mSpeedTop)/mYAxisSpeed.getAxisLabelsCount(), mPaint);
+            float ylabel_width = mPaint.measureText(ylabel);
+
+            canvas.drawText(ylabel, -5 + 100 - ylabel_width, mSpeedBottom -i*(mSpeedBottom - mSpeedTop)/mYAxisSpeed.getAxisLabelsCount(), mPaint);
 
         }
 
@@ -431,7 +522,7 @@ public class FChart extends View {
         int w = getWidth();
         int h = getHeight();
 
-        mPaint.setTextSize(20);
+        mPaint.setTextSize(15);
 
         IOYFormatter io = (IOYFormatter)mYAxisIO.getmAxisValueFormatter();
 
@@ -447,8 +538,10 @@ public class FChart extends View {
 //            int ylabel_int = Math.round(ylabelnum);
 //
 //            ylabel = String.valueOf(ylabel_int);
+
+              float ylabel_width = mPaint.measureText(ylabel);
 //
-              canvas.drawText(ylabel, 5, mIOTop + 20*i, mPaint);
+              canvas.drawText(ylabel, -5 + 100 - ylabel_width, mIOTop +40f +20f + 30*i, mPaint);
 
         }
 
@@ -458,7 +551,9 @@ public class FChart extends View {
 
         mPaint.setTextSize(20);
 
-        canvas.drawText("TCR", 5, mSpeedBottom + mTCRheight/2, mPaint);
+        float ylabel_width = mPaint.measureText("TCR");
+
+        canvas.drawText("TCR", -5 + 100 - ylabel_width, mSpeedBottom + mTCRheight/2, mPaint);
 
     }
 
@@ -466,34 +561,182 @@ public class FChart extends View {
         Paint mTCRLinePaint = new Paint();
         mTCRLinePaint.setColor(Color.RED);
         mTCRLinePaint.setStrokeWidth(1f);
-        mTCRLinePaint.setStyle(Paint.Style.STROKE);
+        mTCRLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         int w = getWidth();
         int h = getHeight();
 
         LineData ld = linedata.get(0);
 
-        float x = 10f;
+        float x = 100f;
 
         for (int i = 0; i < ld.getDataSetByIndex(0).getEntryCount(); i++) {
             Entry data = ((DataSet<Entry>) ld.getDataSetByIndex(0)).getEntryForIndex(i);
             float curX = 100 + (data.getX() - mXAxis.getAxisMin()) * (w-100) / mXAxis.getAxisRange();
 
-            switch (Math.round(data.getY())) {
-                case 0:
+            switch (0x3a) {
+                case 0x00:
                     mTCRLinePaint.setColor(Color.GRAY);
                     mTCRLinePaint.setStrokeWidth(mTCRheight/2);
                     canvas.drawLine(x, mSpeedBottom +mTCRheight/2, curX, mSpeedBottom +mTCRheight/2, mTCRLinePaint);
                     break;
-                case 5:
-                    mTCRLinePaint.setColor(Color.GREEN);
-                    mTCRLinePaint.setStrokeWidth(2f);
-                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2 - 10, curX, mSpeedBottom +mTCRheight/2 - 10, mTCRLinePaint);
-                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2 - 5, curX, mSpeedBottom +mTCRheight/2 - 5, mTCRLinePaint);
-                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2 , curX, mSpeedBottom +mTCRheight/2 , mTCRLinePaint);
-                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2 + 5, curX, mSpeedBottom +mTCRheight/2 + 5, mTCRLinePaint);
-                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2 + 10, curX, mSpeedBottom +mTCRheight/2 + 10, mTCRLinePaint);
+
+                case 0x03:  //H
+                    mTCRLinePaint.setColor(Color.RED);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight/2);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2, curX, mSpeedBottom +mTCRheight/2, mTCRLinePaint);
                     break;
+
+                case 0x05: //27.9
+                    mTCRLinePaint.setColor(Color.parseColor("#FFC0CB"));
+                    mTCRLinePaint.setStrokeWidth(mTCRheight/2);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2, curX, mSpeedBottom +mTCRheight/2, mTCRLinePaint);
+                    break;
+
+                case 0x06: //L4
+                    mTCRLinePaint.setColor(Color.GREEN);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight/10);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/10, curX, mSpeedBottom +mTCRheight/10, mTCRLinePaint);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*3/10, curX, mSpeedBottom +mTCRheight*3/10, mTCRLinePaint);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*7/10, curX, mSpeedBottom +mTCRheight*7/10, mTCRLinePaint);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*9/10, curX, mSpeedBottom +mTCRheight*9/10, mTCRLinePaint);
+                break;
+
+                case 0x09: //HU
+                    mTCRLinePaint.setColor(Color.RED);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight/4);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/4, curX, mSpeedBottom +mTCRheight/4, mTCRLinePaint);
+                    mTCRLinePaint.setColor(Color.YELLOW);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*3/4, curX, mSpeedBottom +mTCRheight*3/4, mTCRLinePaint);
+                    break;
+                case 0x0a: //U3
+                    mTCRLinePaint.setColor(Color.YELLOW);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight/6);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/6, curX, mSpeedBottom +mTCRheight/6, mTCRLinePaint);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*3/6, curX, mSpeedBottom +mTCRheight*3/6, mTCRLinePaint);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*5/6, curX, mSpeedBottom +mTCRheight*5/6, mTCRLinePaint);
+                    break;
+
+                case 0x0c: //UUS
+                    mTCRLinePaint.setColor(Color.parseColor("#FFA500"));
+                    mTCRLinePaint.setStrokeWidth(mTCRheight*4/5);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2, curX, mSpeedBottom +mTCRheight/2, mTCRLinePaint);
+                    mTCRLinePaint.setColor(Color.BLACK);
+                    mTCRLinePaint.setStrokeWidth(5f);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2, curX, mSpeedBottom +mTCRheight/2, mTCRLinePaint);
+                    break;
+
+                case 0x11: //25.7
+                    mTCRLinePaint.setColor(Color.parseColor("#F5F5F5"));
+                    mTCRLinePaint.setStrokeWidth(mTCRheight*4/5);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2, curX, mSpeedBottom +mTCRheight/2, mTCRLinePaint);
+                    break;
+
+                case 0x12: //L5
+                    mTCRLinePaint.setColor(Color.GREEN);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight/10);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/10, curX, mSpeedBottom +mTCRheight/10, mTCRLinePaint);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*3/10, curX, mSpeedBottom +mTCRheight*3/10, mTCRLinePaint);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*5/10, curX, mSpeedBottom +mTCRheight*5/10, mTCRLinePaint);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*7/10, curX, mSpeedBottom +mTCRheight*7/10, mTCRLinePaint);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*9/10, curX, mSpeedBottom +mTCRheight*9/10, mTCRLinePaint);
+                    break;
+
+                case 0x14: //UU
+                    mTCRLinePaint.setColor(Color.YELLOW);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight*4/5);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2, curX, mSpeedBottom +mTCRheight/2, mTCRLinePaint);
+                    mTCRLinePaint.setColor(Color.BLACK);
+                    mTCRLinePaint.setStrokeWidth(5f);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2, curX, mSpeedBottom +mTCRheight/2, mTCRLinePaint);
+                    break;
+
+                case 0x18:  //LU2
+
+                    mTCRLinePaint.setColor(Color.GREEN);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight/4);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/6, curX, mSpeedBottom +mTCRheight/6, mTCRLinePaint);
+
+                    mTCRLinePaint.setColor(Color.YELLOW);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight/3);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*4/6, curX, mSpeedBottom +mTCRheight*4/6, mTCRLinePaint);
+                    mTCRLinePaint.setColor(Color.BLACK);
+                    mTCRLinePaint.setStrokeWidth(5f);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*4/6, curX, mSpeedBottom +mTCRheight*4/6, mTCRLinePaint);
+                    break;
+
+                case 0x21: //HB
+                    mTCRLinePaint.setColor(Color.RED);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight/4);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/4, curX, mSpeedBottom +mTCRheight/4, mTCRLinePaint);
+                    mTCRLinePaint.setColor(Color.WHITE);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*3/4, curX, mSpeedBottom +mTCRheight*3/4, mTCRLinePaint);
+                    break;
+
+                case 0x22: //U2S
+                    mTCRLinePaint.setColor(Color.parseColor("#FFA500"));
+                    mTCRLinePaint.setStrokeWidth(mTCRheight/4);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/4, curX, mSpeedBottom +mTCRheight/4, mTCRLinePaint);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*3/4, curX, mSpeedBottom +mTCRheight*3/4, mTCRLinePaint);
+                    break;
+
+                case 0x24:
+                    mTCRLinePaint.setColor(Color.YELLOW);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight/4);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/4, curX, mSpeedBottom +mTCRheight/4, mTCRLinePaint);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*3/4, curX, mSpeedBottom +mTCRheight*3/4, mTCRLinePaint);
+                    break;
+
+                case 0x28: //U2
+                    mTCRLinePaint.setColor(Color.YELLOW);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight/4);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/4, curX, mSpeedBottom +mTCRheight/4, mTCRLinePaint);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*3/4, curX, mSpeedBottom +mTCRheight*3/4, mTCRLinePaint);
+                    break;
+                case 0x30:  //LU
+                    mTCRLinePaint.setColor(Color.GREEN);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight/4);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/4, curX, mSpeedBottom +mTCRheight/4, mTCRLinePaint);
+                    mTCRLinePaint.setColor(Color.YELLOW);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*3/4, curX, mSpeedBottom +mTCRheight*3/4, mTCRLinePaint);
+                    break;
+
+                case 0x36: //绿3
+                    mTCRLinePaint.setColor(Color.GREEN);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight/10);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/10, curX, mSpeedBottom +mTCRheight/10, mTCRLinePaint);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*5/10, curX, mSpeedBottom +mTCRheight*5/10, mTCRLinePaint);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*9/10, curX, mSpeedBottom +mTCRheight*9/10, mTCRLinePaint);
+                    break;
+
+                case 0x3a: //绿1
+                    mTCRLinePaint.setColor(Color.GREEN);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight*4/5);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2, curX, mSpeedBottom +mTCRheight/2, mTCRLinePaint);
+                    break;
+                case 0x3c: //绿2
+                    mTCRLinePaint.setColor(Color.GREEN);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight/3);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/6, curX, mSpeedBottom +mTCRheight/6, mTCRLinePaint);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight*5/6, curX, mSpeedBottom +mTCRheight*5/6, mTCRLinePaint);
+                    break;
+
+
+                default:
+                    mTCRLinePaint.setColor(Color.WHITE);
+                    mTCRLinePaint.setStrokeWidth(mTCRheight*4/5);
+                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2, curX, mSpeedBottom +mTCRheight/2, mTCRLinePaint);
+                    break;
+
+//                case 5:
+//                    mTCRLinePaint.setColor(Color.GREEN);
+//                    mTCRLinePaint.setStrokeWidth(2f);
+//                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2 - 10, curX, mSpeedBottom +mTCRheight/2 - 10, mTCRLinePaint);
+//                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2 - 5, curX, mSpeedBottom +mTCRheight/2 - 5, mTCRLinePaint);
+//                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2 , curX, mSpeedBottom +mTCRheight/2 , mTCRLinePaint);
+//                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2 + 5, curX, mSpeedBottom +mTCRheight/2 + 5, mTCRLinePaint);
+//                    canvas.drawLine(x, mSpeedBottom +mTCRheight/2 + 10, curX, mSpeedBottom +mTCRheight/2 + 10, mTCRLinePaint);
+//                    break;
 
             }
 
@@ -508,7 +751,9 @@ public class FChart extends View {
 
         mPaint.setTextSize(20);
 
-        canvas.drawText("BTM", 5, mSpeedBottom + mTCRheight + mBTMheight/2, mPaint);
+        float ylabel_width = mPaint.measureText("BTM");
+
+        canvas.drawText("BTM", -5 + 100 - ylabel_width, mSpeedBottom + mTCRheight + mBTMheight/2, mPaint);
 
     }
 
@@ -516,7 +761,7 @@ public class FChart extends View {
         Paint mBTMLinePaint = new Paint();
         mBTMLinePaint.setColor(Color.BLUE);
         mBTMLinePaint.setStrokeWidth(5f);
-        mBTMLinePaint.setStyle(Paint.Style.STROKE);
+        mBTMLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         int w = getWidth();
         int h = getHeight();
@@ -543,7 +788,7 @@ public class FChart extends View {
 
     private void drawIO(Canvas canvas) {
         Paint mIOLinePaint = new Paint();
-        mIOLinePaint.setColor(Color.BLUE);
+        mIOLinePaint.setColor(Color.parseColor("#FFA500"));
         mIOLinePaint.setStrokeWidth(5f);
         //mIOLinePaint.setStyle(Paint.Style.STROKE);
         mIOLinePaint.setStyle(Paint.Style.FILL);//设置填满
@@ -560,7 +805,14 @@ public class FChart extends View {
             float curX = 100 + (data.getX() - mXAxis.getAxisMin()) * (w-100) / mXAxis.getAxisRange();
 
             if (data.getY() > 0) {
-                canvas.drawRect(x, mIOTop + 20*i +10, curX, mIOTop + 20*i +20, mIOLinePaint);// 长方形  }
+                canvas.drawRect(x, mIOTop + 40f +5f, curX, mIOTop + 40f +25f, mIOLinePaint);// 长方形
+                canvas.drawRect(x, mIOTop + 40f + 30f +5f, curX, mIOTop + 40f +30f+25f, mIOLinePaint);// 长方形  }
+                canvas.drawRect(x, mIOTop + 40f + 60f +5f, curX, mIOTop + 40f +60f+25f, mIOLinePaint);// 长方形  }
+                canvas.drawRect(x, mIOTop + 40f + 90f +5f, curX, mIOTop + 40f +90f+25f, mIOLinePaint);// 长方形  }
+                canvas.drawRect(x, mIOTop + 40f + 120f +5f, curX, mIOTop + 40f +120f+25f, mIOLinePaint);// 长方形  }
+                canvas.drawRect(x, mIOTop + 40f + 150f +5f, curX, mIOTop + 40f +150f+25f, mIOLinePaint);// 长方形  }
+                canvas.drawRect(x, mIOTop + 40f + 180f +5f, curX, mIOTop + 40f +180f+25f, mIOLinePaint);// 长方形  }
+
             }
 
             x = curX;

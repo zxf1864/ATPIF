@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
@@ -18,27 +19,13 @@
         android:layout_height="fill_parent"
         android:layout_gravity="start">
 
-        <LinearLayout
-            android:id="@+id/id_drawerheader"
-            android:layout_width="fill_parent"
-            android:layout_height="100dp"
-            android:background="#999">
-
-            <TextView
-                android:id="@+id/textView_drawerName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="TextView" />
-        </LinearLayout>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/id_drawerviewpager"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="#888"
-            android:layout_below="@+id/id_drawerheader"
+            android:background= "@color/white"
             >
         </android.support.v4.view.ViewPager>
 

@@ -20,8 +20,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.afei.atpif.CustomListView.ATPIFListModel;
+import com.afei.atpif.Model.TrainListData;
 import com.afei.atpif.SocketClient.NettyService;
+import com.afei.atpif.Util.DatabaseHelper;
 import com.afei.atpif.Util.StatusBarUtils;
 
 import java.util.ArrayList;
@@ -158,10 +162,14 @@ public class MainActivity extends AppCompatActivity
                     case 0:
                         ((ImageButton) mTabBtnWeixin.findViewById(R.id.btn_tab_bottom_weixin))
                                 .setImageResource(R.drawable.tab_weixin_pressed);
+                        mToolBar.setVisibility(View.VISIBLE);
+
+                        mdrawerViewPager.setCurrentItem(0);
                         break;
                     case 1:
                         ((ImageButton) mTabBtnFrd.findViewById(R.id.btn_tab_bottom_friend))
                                 .setImageResource(R.drawable.tab_find_frd_pressed);
+                        mToolBar.setVisibility(View.VISIBLE);
                         break;
                     case 2:
                         ((ImageButton) mTabBtnAddress.findViewById(R.id.btn_tab_bottom_contact))
@@ -171,11 +179,12 @@ public class MainActivity extends AppCompatActivity
                     case 3:
                         ((ImageButton) mTabBtnSettings.findViewById(R.id.btn_tab_bottom_setting))
                                 .setImageResource(R.drawable.tab_settings_pressed);
+                        mToolBar.setVisibility(View.VISIBLE);
                         break;
                 }
 
                 currentIndex = position;
-                mdrawerViewPager.setCurrentItem(position);
+
             }
 
             @Override
@@ -189,6 +198,7 @@ public class MainActivity extends AppCompatActivity
             {
             }
         });
+
 
 
         Timber.plant(new Timber.DebugTree());
@@ -209,7 +219,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -221,12 +231,24 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId())
+        {
+            case R.id.action_search:
+                Toast.makeText(MainActivity.this, "搜索", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.action_add:
+                Toast.makeText(MainActivity.this, "添加", Toast.LENGTH_SHORT).show();
+                startAddDev();
+                break;
+            case R.id.action_setting:
+                Toast.makeText(MainActivity.this, "设置", Toast.LENGTH_SHORT).show();
+                break;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -253,7 +275,6 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 
 
     protected void resetTabBtn()
@@ -368,5 +389,24 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
+    public void startAddDev()
+    {
+        Intent i = new Intent(this, AddDevActivity.class);
+        startActivityForResult(i,0);
+    }
+    //结果处理函数，当从secondActivity中返回时调用此函数
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==0 && resultCode==RESULT_OK){
+
+            ATPIFListModel product = (ATPIFListModel) data.getSerializableExtra("product");
+            Toast.makeText(MainActivity.this, "添加界面返回  "+product.atpifName, Toast.LENGTH_SHORT).show();
+
+            TrainListData.getInstance().productList.add(product);
+            TrainList.UpdateListView();
+        }
+    }
 
 }

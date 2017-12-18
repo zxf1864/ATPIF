@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ATPIF.iml" filepath="$PROJECT_DIR$/ATPIF.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugins/HoloColorPicker/HoloColorPicker.iml" filepath="$PROJECT_DIR$/plugins/HoloColorPicker/HoloColorPicker.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/k9mail-library/k9mail-library.iml" filepath="$PROJECT_DIR$/k9mail-library/k9mail-library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugins/openpgp-api-lib/openpgp-api/openpgp-api.iml" filepath="$PROJECT_DIR$/plugins/openpgp-api-lib/openpgp-api/openpgp-api.iml" />
     </modules>
   </component>
 </project>

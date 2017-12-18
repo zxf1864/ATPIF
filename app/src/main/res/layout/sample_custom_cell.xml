@@ -1,11 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_vertical"
     android:layout_marginLeft="@dimen/activity_horizontal_margin"
     android:layout_marginRight="@dimen/activity_horizontal_margin">
     <!-- 类似于iOS开发中Cell的布局 -->
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginLeft="5dp"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/product_id"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:layout_marginLeft="5dp"
+            android:textSize="@dimen/item_top_title_size"
+            android:text="" />
+
+        <com.afei.atpif.CustomWidget.CircleImage
+            android:id="@+id/product_photo"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/dev_disconnect"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <LinearLayout
         android:orientation="horizontal"
         android:gravity="center_vertical"
@@ -59,7 +92,6 @@
             android:textSize="@dimen/item_top_font_size"
             android:text="@string/item_top_right_title"/>
     </LinearLayout>
-
     <LinearLayout
         android:orientation="horizontal"
         android:gravity="center_vertical"
@@ -92,6 +124,8 @@
             android:lines="1"
             android:textSize="@dimen/item_down_font_size"
             android:text="0000-00-00"/>
+    </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

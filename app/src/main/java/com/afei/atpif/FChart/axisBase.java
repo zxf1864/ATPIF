@@ -69,7 +69,7 @@ public class axisBase extends ComponentBase {
         return axisLabelsCount;
     }
 
-    private int axisLabelsCount = 10;
+    private int axisLabelsCount = 5;
 
     /**
      * the number of decimal digits to use

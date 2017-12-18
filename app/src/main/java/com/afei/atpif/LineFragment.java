@@ -3,6 +3,7 @@ package com.afei.atpif;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -181,8 +182,12 @@ public class LineFragment extends BaseFragment {
         List<String> labels =  new ArrayList<>();
         labels.add("PWN_DO01");
         labels.add("CAB_DO02");
-        labels.add(" EB_DO03");
-        labels.add(" RB_DO04");
+        labels.add("FWR_DO03");
+        labels.add("BCK_DO04");
+        labels.add("SLP_DO05");
+        labels.add("TCO_DO06");
+        labels.add(" EB_DO07");
+        labels.add(" RB_DO08");
 
         IOYFormatter myXFormatter = new IOYFormatter(labels);
         mSpeedChart.getmYAxisIO().setValueFormatter(myXFormatter);
@@ -627,17 +632,13 @@ public class LineFragment extends BaseFragment {
 
                 Entry dataEB = new Entry();
                 dataEB.setX(curTimeMilis - BaseMili);
-                dataEB.setY(Math.round(Math.random()*2 -1));
+                dataEB.setY(1);
                 ((DataSet<Entry>)ld.getDataSetByIndex(2)).addEntry(dataEB);
                 //ld.notifyDataChanged();
 
                 ld.notifyDataChanged();
 
                 mSpeedChart.invalidate();
-
-
-
-
 
             }
         };
@@ -649,7 +650,9 @@ public class LineFragment extends BaseFragment {
                 while (thread != null) {
 
                     // Don't generate garbage runnables inside the loop.
-                    getActivity().runOnUiThread(runnable);
+                    FragmentActivity fa = getActivity();
+                    if(fa != null)
+                    fa.runOnUiThread(runnable);
 
                     try {
                         //Thread.sleep(25);

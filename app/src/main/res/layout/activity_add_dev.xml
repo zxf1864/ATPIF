@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/add_dev_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/sailclothblock"
+    tools:context="com.afei.atpif.AddDevActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/child_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:title="添加设备"
+
+        app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+    <TextView
+        android:id="@+id/textView_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/child_toolbar"
+        android:layout_marginLeft="21dp"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="29dp"
+        android:text="设备名称"
+        android:textColor="@android:color/white"
+        tools:layout_editor_absoluteX="29dp"
+        tools:layout_editor_absoluteY="25dp" />
+
+    <EditText
+        android:id="@+id/editText_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView_name"
+        android:layout_alignBottom="@+id/textView_name"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textColor="@android:color/white"
+        tools:layout_editor_absoluteX="103dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <TextView
+        android:id="@+id/textView_IP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView_name"
+        android:layout_alignStart="@+id/textView_name"
+        android:layout_below="@+id/editText_name"
+        android:layout_marginTop="12dp"
+        android:text="设备IP"
+        android:textColor="@android:color/white"
+        tools:layout_editor_absoluteX="29dp"
+        tools:layout_editor_absoluteY="80dp" />
+
+    <EditText
+        android:id="@+id/editText_IP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editText_name"
+        android:layout_alignStart="@+id/editText_name"
+        android:layout_below="@+id/editText_name"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textColor="@color/white"
+        tools:layout_editor_absoluteX="103dp"
+        tools:layout_editor_absoluteY="62dp" />
+
+    <TextView
+        android:id="@+id/textView_Port"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView_IP"
+        android:layout_alignStart="@+id/textView_IP"
+        android:layout_below="@+id/editText_IP"
+        android:layout_marginTop="16dp"
+        android:text="设备端口"
+        android:textColor="@android:color/white"
+        tools:layout_editor_absoluteX="29dp"
+        tools:layout_editor_absoluteY="136dp" />
+
+    <EditText
+        android:id="@+id/editText_Port"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editText_IP"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textColor="@color/white"
+        tools:layout_editor_absoluteX="103dp"
+        tools:layout_editor_absoluteY="124dp" />
+
+    <com.afei.atpif.CustomWidget.CircleImage
+        android:id="@+id/imageView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+
+        android:layout_alignEnd="@+id/editText_Port"
+        android:layout_alignRight="@+id/editText_Port"
+        android:layout_below="@+id/editText_Port"
+        android:layout_marginEnd="55dp"
+        android:layout_marginRight="55dp"
+        android:src="@drawable/dev_disconnect" />
+
+    <TextView
+        android:id="@+id/textView_addImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageView"
+        android:layout_alignLeft="@+id/textView_Port"
+        android:layout_alignStart="@+id/textView_Port"
+        android:layout_marginBottom="19dp"
+        android:text="添加快照"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/button_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView_addImage"
+        android:layout_alignStart="@+id/textView_addImage"
+        android:layout_below="@+id/textView_addImage"
+        android:layout_marginTop="20dp"
+        android:text="确定"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/button_quit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/button_ok"
+        android:layout_alignEnd="@+id/editText_Port"
+        android:layout_alignRight="@+id/editText_Port"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:text="取消"
+        android:textColor="@android:color/white" />
+
+
+</RelativeLayout>

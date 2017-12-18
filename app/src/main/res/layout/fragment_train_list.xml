@@ -9,7 +9,7 @@
 
     <ListView
         android:id="@+id/ATPIF_list_view"
-        android:background="@drawable/sailclothblock"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </ListView>
